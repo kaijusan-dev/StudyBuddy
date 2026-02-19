@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: studybuddy_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src
+    
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: studybuddy_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+    restart: always
