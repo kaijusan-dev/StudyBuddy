@@ -4,12 +4,18 @@ services:
   backend:
     build:
       context: ./backend
+    env_file:
+      - ./backend/.env
     container_name: studybuddy_backend
     ports:
       - "3000:3000"
     volumes:
       - ./backend:/app
       - /app/node_modules
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    depends_on:
+      - db
     
   frontend:
     build: 
@@ -20,8 +26,17 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
     restart: always
+    env_file:
+      - ./frontend/.env
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    container_name: studybuddy_db
+    restart: always
+    env_file:
+      - ./backend/.env
