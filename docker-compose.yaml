@@ -9,23 +9,17 @@ services:
     container_name: studybuddy_backend
     ports:
       - "3000:3000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
     environment:
       - NODE_TLS_REJECT_UNAUTHORIZED=0
     depends_on:
       - db
-    
+      
   frontend:
     build: 
       context: ./frontend
     container_name: studybuddy_frontend
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
     restart: always

@@ -2,6 +2,7 @@ import ical from 'node-ical';
 import pool from '../db.js';
 
 async function fetchSchedule(calendarUrl) {
+  console.log("Fetching schedule...");
   const res = await fetch(calendarUrl);
   const text = await res.text();
 
@@ -18,7 +19,7 @@ async function fetchSchedule(calendarUrl) {
         });
     }
   }
-  console.log('Fetched schedule:', schedule);
+  console.log("Schedule fetched:", schedule.length, "events");
   return schedule;
 }
 
@@ -45,15 +46,18 @@ async function saveScheduleToDB(schedule) {
         await client.query('ROLLBACK');
         throw err;
     } finally {
-        console.log('Schedule saved to DB');
         client.release();
     }
 }
 
-function fetchAndSaveSchedule(calendarUrl) {
-    return fetchSchedule(calendarUrl)
-        .then(schedule => saveScheduleToDB(schedule))
-        .catch(err => console.error('Error fetching or saving schedule:', err));
+async function fetchAndSaveSchedule(calendarUrl) {
+    try {
+        const schedule = await fetchSchedule(calendarUrl);
+        await saveScheduleToDB(schedule);
+    }
+    catch (err) {
+        console.error('Error fetching or saving schedule:', err);
+    }
 }
 
 async function initializeScheduleTable() {
