@@ -23,18 +23,3 @@
     color: white;
     font-weight: bold;
 }
-
-.Schedule tr:nth-child(even) {
-    background-color: #f2f2f2; /* Чередующиеся полоски для читаемости */
-}
-
-.Schedule tr:hover {
-    background-color: #ddd; /* Подсветка при наведении */
-}
-
-@media (max-width: 768px) {
-    .Schedule th, .Schedule td {
-        padding: 6px;
-        font-size: 14px;
-    }
-}

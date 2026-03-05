@@ -1,0 +1,52 @@
+.Navbar {
+  width: 100%;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 100;
+}
+
+/* логотип */
+.Logo img{
+  height: 40px;
+  width: auto;
+
+  cursor: pointer;
+
+  transition: transform 0.15s ease;
+}
+
+.Logo:hover {
+  transform: scale(1.05);
+}
+
+/* ссылки */
+.Links {
+  display: flex;
+  gap: 24px;
+}
+
+.Links a {
+  text-decoration: none;
+
+  color: #374151;
+  font-weight: 500;
+
+  transition: color 0.2s;
+}
+
+.Links a:hover {
+  color: #6366f1;
+}

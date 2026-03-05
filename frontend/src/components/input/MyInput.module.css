@@ -1,0 +1,4 @@
+.MyInput {
+  display: flex;
+  flex-direction: column;
+}
