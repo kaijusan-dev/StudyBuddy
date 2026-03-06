@@ -1,5 +1,5 @@
 import ical from 'node-ical';
-import pool from '../db.js';
+import {pool} from '../db.js';
 
 async function fetchSchedule(calendarUrl) {
   console.log("Fetching schedule...");
@@ -60,18 +60,4 @@ async function fetchAndSaveSchedule(calendarUrl) {
     }
 }
 
-async function initializeScheduleTable() {
-    const createTableQuery = `
-        CREATE TABLE IF NOT EXISTS schedule (
-            id SERIAL PRIMARY KEY,
-            uid TEXT UNIQUE,
-            start_time TIMESTAMPTZ,
-            end_time TIMESTAMPTZ,
-            summary TEXT,
-            group_id INTEGER
-        );
-    `;
-    return await pool.query(createTableQuery);
-}
-
-export { fetchSchedule, saveScheduleToDB, fetchAndSaveSchedule, initializeScheduleTable };
+export { fetchSchedule, saveScheduleToDB, fetchAndSaveSchedule };
