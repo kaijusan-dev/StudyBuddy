@@ -1,24 +1,31 @@
-import {pool} from "../db.js";
+import {findUserByNickname, findUserByEmail, createUser} from '../repositories/auth.repository.js'
 
-async function saveUserToDB(user) {
-    const client = await pool.connect();
-    try {
-        await client.query('BEGIN');
-
-        await client.query(
-            `INSERT INTO users (nickname, email, group_id, password) 
-                VALUES ($1, $2, $3, $4)
-            `,
-            [user.nickname, user.email, user.group_id, user.password]
-        );
-
-        await client.query('COMMIT');
-    } catch (err) {
-        await client.query('ROLLBACK');
-        throw err;
-    } finally {
-        client.release();
+async function registerUser(user) {
+    if (await findUserByNickname(user.nickname)) {
+        throw new Error('Никнейм уже занят');
     }
+
+    if (await findUserByEmail(user.email)) {
+        throw new Error('Email уже занят');
+    }
+
+    const newUser = await createUser(user);
+
+    return newUser;
 }
 
-export { saveUserToDB };
+async function loginUser({email, password}) {
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+        throw new Error('Пользователь не найден');
+    }
+
+    if (user.password != password) {
+        throw new Error('Неверный пароль');
+    }
+
+    return user;
+}
+
+export { registerUser, loginUser };
