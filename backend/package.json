@@ -4,7 +4,8 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "node-ical": "^0.25.3",
-    "pg": "^8.18.0"
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
   },
   "scripts": {
     "dev": "nodemon -L src/server.js"
