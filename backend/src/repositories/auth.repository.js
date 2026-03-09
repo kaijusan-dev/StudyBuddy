@@ -1,9 +1,9 @@
 import { pool } from "../db.js";
 
-const findUserByNickname = async (nickname) => {
+const findUserByUsername = async (username) => {
     const res = await pool.query(`
-        SELECT * FROM users WHERE nickname = $1`, 
-        [nickname]
+        SELECT * FROM users WHERE username = $1`, 
+        [username]
     )
     return res.rows[0] || null;
 };
@@ -16,14 +16,14 @@ const findUserByEmail = async (email) => {
     return res.rows[0] || null;
 };
 
-const createUser = async ({ nickname, email, group_id, password }) => {
+const createUser = async ({ username, email, group_id, password }) => {
   const res = await pool.query(
-    `INSERT INTO users (nickname, email, group_id, password)
+    `INSERT INTO users (username, email, group_id, password)
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [nickname, email, group_id, password]
+    [username, email, group_id, password]
   )
   return res.rows[0]
 };
 
-export {findUserByNickname, findUserByEmail, createUser};
+export {findUserByUsername, findUserByEmail, createUser};

@@ -1,8 +1,8 @@
-import {findUserByNickname, findUserByEmail, createUser} from '../repositories/auth.repository.js'
+import {findUserByUsername, findUserByEmail, createUser} from '../repositories/auth.repository.js'
 
 async function registerUser(user) {
-    if (await findUserByNickname(user.nickname)) {
-        throw new Error('Никнейм уже занят');
+    if (await findUserByUsername(user.username)) {
+        throw new Error('Имя пользователя уже занято');
     }
 
     if (await findUserByEmail(user.email)) {

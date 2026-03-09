@@ -2,33 +2,67 @@ import {useState} from 'react'
 import RegisterForm from '../components/register/RegisterForm';
 import LoginForm from '../components/login/LoginForm';
 import api from '../api/api';
-import validate from '../validators/formValidator';
+import { loginSchema, registerSchema } from '../schemas/auth.schemas';
 
 export default function AuthPage({type}) {
 
     const [state, setState] = useState({
-        nickname: '', 
+        username: '', 
         email: '',
         group_id: '',
         password: '',
         passwordAgain: '',
     });
 
-    const [error, setError] = useState([]);
+    const [errors, setErrors] = useState({});
 
-    const sendResult = async (state) => {
-        // await validate(state, setError);
-        if (error.length == 0) {
-            api.post(`/auth/${type || 'login'}`, state)
-            .then(res => console.log(res));
+    const handleSubmit = async (type) => {
+
+        let result;
+
+        if (type === 'register') result = registerSchema.safeParse(state);
+        else result = loginSchema.safeParse(state);
+
+        if (!result.success) {
+            const fieldErrors = {};
+
+            result.error.issues.forEach((issue) => {
+            fieldErrors[issue.path[0]] = issue.message;
+            })
+
+            setErrors(fieldErrors);
+            return;
         }
-    };
+        
+        setErrors({});
+
+        try {
+            const res = await api.post(`/auth/${type || "login"}`, result.data);
+            console.log(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <div className="AuthPage">
             {type === 'register' 
-                ? <RegisterForm state={state} setState={setState} sendResult={sendResult}/>
-                : <LoginForm state={state} setState={setState} sendResult={sendResult}/>
+                ? (
+                <RegisterForm 
+                    state={state} 
+                    setState={setState} 
+                    handleSubmit={handleSubmit} 
+                    errors={errors} 
+                />
+                )
+                : (
+                <LoginForm 
+                    state={state} 
+                    setState={setState} 
+                    handleSubmit={handleSubmit} 
+                    errors={errors} 
+                />
+            )
             }
         </div>
     )

@@ -2,7 +2,7 @@ import express from 'express'
 import cors from "cors";
 import scheduleRouter from './routes/schedule.route.js';
 import { fetchAndSaveSchedule } from './services/schedule.service.js';
-import { initializeScheduleTable, initializeUsersTable } from './db.js';
+import { initializeScheduleTable, initializeUsersTable, connectWithRetry } from './db.js';
 import authRouter from './routes/auth.route.js';
 
 const app = express();
@@ -20,10 +20,13 @@ app.use('/auth', authRouter);
 
 async function startServer() {
     try {
+        await connectWithRetry();
         await initializeScheduleTable();
         await initializeUsersTable();
+
         const calendarUrl = 'https://ical.psu.ru/calendars/R5CGGG87TW36X3D6';
         await fetchAndSaveSchedule(calendarUrl);
+
         console.log('Initial schedule fetch and save completed');
 
         app.use('/schedule', scheduleRouter);   

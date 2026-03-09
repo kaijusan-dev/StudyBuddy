@@ -2,7 +2,7 @@ import styles from './Input.module.css';
 
 export default function Input({name, label, type, state, setState}) {
     return (
-        <div className={styles.MyInput}>
+        <div className={styles.Input}>
             <label htmlFor={name}>{label}</label>
             <br />
             <input 
@@ -12,7 +12,7 @@ export default function Input({name, label, type, state, setState}) {
                 label={label}
                 value={state[name]}
                 onChange={(e) => {
-                    setState({...state, [name]: e.target.value})
+                    setState({...state, [name]: e.target.value});
                 }}
             />
         </div>
