@@ -1,6 +1,6 @@
-import styles from './MyInput.module.css';
+import styles from './Input.module.css';
 
-export default function MyInput({name, label, type, state, setState}) {
+export default function Input({name, label, type, state, setState}) {
     return (
         <div className={styles.MyInput}>
             <label htmlFor={name}>{label}</label>

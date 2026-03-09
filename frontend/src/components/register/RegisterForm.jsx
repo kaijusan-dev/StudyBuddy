@@ -1,4 +1,4 @@
-import MyInput from "../input/MyInput";
+import Input from "../input/Input";
 
 export default function RegisterForm({state, setState, sendResult}) {
     return (
@@ -8,11 +8,11 @@ export default function RegisterForm({state, setState, sendResult}) {
                 sendResult(state);
             }}>
 
-            <MyInput name = 'nickname' label= 'Имя' type='text' state={state} setState={setState}/>
-            <MyInput name = 'email' label= 'Email' type='text' state={state} setState={setState}/>
-            <MyInput name = 'group_id' label= 'Номер группы' type='text' state={state} setState={setState}/>
-            <MyInput name = 'password' label= 'Пароль' type='text' state={state} setState={setState}/>
-            <MyInput name = 'passwordAgain' label= 'Повторите пароль' type='text' state={state} setState={setState}/>
+            <Input name = 'nickname' label= 'Имя' type='text' state={state} setState={setState}/>
+            <Input name = 'email' label= 'Email' type='text' state={state} setState={setState}/>
+            <Input name = 'group_id' label= 'Номер группы' type='text' state={state} setState={setState}/>
+            <Input name = 'password' label= 'Пароль' type='text' state={state} setState={setState}/>
+            <Input name = 'passwordAgain' label= 'Повторите пароль' type='text' state={state} setState={setState}/>
             <hr />
             <button type="submit">Зарегистрироваться</button>
             </form>
