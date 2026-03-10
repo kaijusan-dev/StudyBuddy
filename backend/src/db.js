@@ -46,8 +46,8 @@ async function initializeUsersTable() {
           id SERIAL PRIMARY KEY,
           username TEXT UNIQUE,
           email TEXT UNIQUE,
-          password TEXT,
-          group_id INTEGER
+          group_id INTEGER,
+          password TEXT
       );
   `;
   return await pool.query(createTableQuery);

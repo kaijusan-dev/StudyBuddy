@@ -1,4 +1,5 @@
 import {findUserByUsername, findUserByEmail, createUser} from '../repositories/auth.repository.js'
+import * as bcrypt from 'bcrypt'
 
 async function registerUser(user) {
     if (await findUserByUsername(user.username)) {
@@ -9,7 +10,9 @@ async function registerUser(user) {
         throw new Error('Email уже занят');
     }
 
-    const newUser = await createUser(user);
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    const newUser = await createUser({...user, password: hashedPassword});
 
     return newUser;
 }
@@ -21,11 +24,15 @@ async function loginUser({email, password}) {
         throw new Error('Пользователь не найден');
     }
 
-    if (user.password != password) {
+    const {password: userPassword, ...userData} = user;
+
+    const isValidPassword = await bcrypt.compare(password, userPassword);
+
+    if (!isValidPassword) {
         throw new Error('Неверный пароль');
     }
 
-    return user;
+    return userData;
 }
 
 export { registerUser, loginUser };
