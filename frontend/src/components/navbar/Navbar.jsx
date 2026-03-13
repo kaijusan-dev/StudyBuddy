@@ -3,8 +3,8 @@ import styles from './Navbar.module.css';
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function Navbar({isAuthorized}) {
-    const {logout} = useContext(AuthContext);
+export default function Navbar() {
+    const {user, logout} = useContext(AuthContext);
     return (
         <nav className={styles.Navbar}>
             <Link to={'/'} className={styles.Logo}>
@@ -13,9 +13,14 @@ export default function Navbar({isAuthorized}) {
 
             <div className={styles.Links}>
                 <Link to={'/'}>Главная</Link>
-                <Link to={'/auth/register'}>Регистрация</Link>
-                <Link to={'/auth/login'}>Вход</Link>
-                {isAuthorized && 
+                {!user && 
+                    <>
+                        <Link to={'/auth/register'}>Регистрация</Link>
+                        <Link to={'/auth/login'}>Вход</Link>
+                    </>
+                } 
+                
+                {user && 
                     <>
                         <Link to={'/pet'}>Питомец</Link>
                         <Link to={'/profile'}>Профиль</Link>
