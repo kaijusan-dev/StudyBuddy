@@ -2,6 +2,7 @@ import {findUserByUsername, findUserByEmail, createUser} from '../repositories/a
 import * as bcrypt from 'bcrypt'
 
 async function registerUser(user) {
+
     if (await findUserByUsername(user.username)) {
         throw new Error('Имя пользователя уже занято');
     }
@@ -11,26 +12,37 @@ async function registerUser(user) {
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
+    
+    const newUser = await createUser({
+        ...user,
+        password: hashedPassword
+    });
 
-    const newUser = await createUser({...user, password: hashedPassword});
+    const { password, ...userData } = newUser;
 
-    return newUser;
+    return userData;
 }
 
-async function loginUser({email, password}) {
-    const user = await findUserByEmail(email);
+async function loginUser({identifier, password}) {
+
+    let user;
+    if (identifier.includes("@")) {
+        user = await findUserByEmail(identifier);
+    } else {
+        user = await findUserByUsername(identifier);
+    }
 
     if (!user) {
         throw new Error('Пользователь не найден');
     }
 
-    const {password: userPassword, ...userData} = user;
-
-    const isValidPassword = await bcrypt.compare(password, userPassword);
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
         throw new Error('Неверный пароль');
     }
+
+    const {password: userPassword, ...userData} = user;
 
     return userData;
 }

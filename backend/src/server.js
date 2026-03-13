@@ -4,6 +4,8 @@ import scheduleRouter from './routes/schedule.route.js';
 import { fetchAndSaveSchedule } from './services/schedule.service.js';
 import { initializeScheduleTable, initializeUsersTable, connectWithRetry } from './db.js';
 import authRouter from './routes/auth.route.js';
+import authMiddleware from './middlewares/auth.middleware.js';
+import { findUserById } from './repositories/auth.repository.js';
 
 const app = express();
 
@@ -17,6 +19,12 @@ app.get('/', (req, res) => {
 });
   
 app.use('/auth', authRouter);
+
+app.get('/profile', authMiddleware, async (req, res) => {
+    const user = await findUserById(req.user.id);
+    const {password, ...userData} = user;
+    res.json(userData);
+});
 
 async function startServer() {
     try {

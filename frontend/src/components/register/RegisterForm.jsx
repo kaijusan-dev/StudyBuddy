@@ -4,10 +4,13 @@ import Error from "../error/Error";
 export default function RegisterForm({state, setState, handleSubmit, errors}) {
     return (
         <div className="RegisterForm">
+            <h1>Регистрация</h1>
             <form onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit('register');
             }}>
+
+            {errors.server && <Error message={errors.server} />}
 
             <Input name = 'username' label= 'Имя' type='text' state={state} setState={setState}/>
             {errors.username && <Error message={errors.username} />}

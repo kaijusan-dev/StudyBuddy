@@ -1,5 +1,13 @@
 import { pool } from "../db.js";
 
+const findUserById = async (id) => {
+    const res = await pool.query(`
+        SELECT * FROM users WHERE id = $1`, 
+        [id]
+    )
+    return res.rows[0] || null;
+};
+
 const findUserByUsername = async (username) => {
     const res = await pool.query(`
         SELECT * FROM users WHERE username = $1`, 
@@ -26,4 +34,4 @@ const createUser = async ({ username, email, group_id, password }) => {
   return res.rows[0]
 };
 
-export {findUserByUsername, findUserByEmail, createUser};
+export {findUserById, findUserByUsername, findUserByEmail, createUser};

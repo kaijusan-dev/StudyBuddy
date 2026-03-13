@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/auth/register" element={<AuthPage type='register'/>} />
-          <Route path="/auth/login" element={<AuthPage />} />
+          <Route path="/auth/login" element={<AuthPage type='login' />} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Route>
       </Routes>

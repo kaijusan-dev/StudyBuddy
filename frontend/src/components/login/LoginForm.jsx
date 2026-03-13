@@ -4,12 +4,13 @@ import Input from "../input/Input";
 export default function LoginForm({state, setState, handleSubmit, errors}) {
     return (
         <div className="LoginForm">
+            <h1>Войти</h1>
             <form onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit('login');
             }}>
 
-            <Input name = 'username/email' label= 'Имя пользователя / email' type='text' state={state} setState={setState}/>
+            <Input name = 'identifier' label= 'Имя пользователя / email' type='text' state={state} setState={setState}/>
             {errors.email && <Error message={errors.email} />}
             {errors.username && <Error message={errors.username} />}
 

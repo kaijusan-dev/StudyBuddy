@@ -1,9 +1,10 @@
 import { registerUser, loginUser } from '../services/auth.service.js';
+import generateToken from '../services/token.service.js';
 
 const register = async (req, res) => {
     try {
-        const newUser = await registerUser(req.body);
-        res.status(201).json(newUser);
+        await registerUser(req.body);
+        res.status(201).json({message: 'user created'});
     } catch(err) {
         res.status(400).json({message: err.message});
     }
@@ -12,7 +13,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const user = await loginUser(req.body);
-        res.status(200).json(user);
+        const token = await generateToken({id: user.id});
+        res.status(200).json({user, token});
     } catch(err) {
         res.status(400).json({message: err.message});
     }
