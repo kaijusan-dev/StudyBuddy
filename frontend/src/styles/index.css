@@ -30,7 +30,18 @@ body::before {
     justify-content: center;
 }
 
+.ProfilePage {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
 .LoginForm {
+    width: max-content;
+    align-items: center;
+}
+
+.SettingsForm {
     width: max-content;
     align-items: center;
 }

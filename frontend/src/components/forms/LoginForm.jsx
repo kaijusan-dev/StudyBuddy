@@ -9,6 +9,8 @@ export default function LoginForm({state, setState, handleSubmit, errors}) {
                 e.preventDefault();
                 handleSubmit('login');
             }}>
+                
+            {errors.server && <Error message={errors.server} />}
 
             <Input name = 'identifier' label= 'Имя пользователя / email' type='text' state={state} setState={setState}/>
             {errors.email && <Error message={errors.email} />}

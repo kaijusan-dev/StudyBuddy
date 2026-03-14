@@ -1,0 +1,33 @@
+import { pool } from "../db.js";
+
+async function updateUser(id, data) {
+
+    if (Object.keys(data).length === 0) {
+        throw new Error("No fields to update");
+    }
+
+    const fields = [];
+    const values = [];
+    let index = 1;
+
+    for (const key in data) {
+        fields.push(`${key} = $${index}`);
+        values.push(data[key]);
+        index++;
+    }
+
+    values.push(id);
+
+    const query = `
+        UPDATE users
+        SET ${fields.join(', ')}
+        WHERE id = $${index}
+        RETURNING id, username, email, group_id
+    `;
+
+    const result = await pool.query(query, values);
+
+    return result.rows[0];
+}
+
+export {updateUser};

@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import RegisterForm from '../components/register/RegisterForm';
-import LoginForm from '../components/login/LoginForm';
+import RegisterForm from '../components/forms/RegisterForm';
+import LoginForm from '../components/forms/LoginForm';
 import api from '../api/api';
 import { loginSchema, registerSchema } from '../schemas/auth.schemas';
 import { useContext } from 'react';
@@ -45,7 +45,6 @@ export default function AuthPage({type}) {
             if (type === 'register') {
                 const {username, email, password, group_id} = result.data;
                 const payload = { username, email, password, group_id };
-                console.log("Payload for register:", payload);
                 await api.post('/auth/register', payload);
 
                 navigate('/auth/login');

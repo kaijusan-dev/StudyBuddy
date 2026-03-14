@@ -6,6 +6,9 @@ import { initializeScheduleTable, initializeUsersTable, connectWithRetry } from 
 import authRouter from './routes/auth.route.js';
 import authMiddleware from './middlewares/auth.middleware.js';
 import { findUserById } from './repositories/auth.repository.js';
+import { updateUser } from './repositories/profile.repository.js';
+import { validate } from './middlewares/validate.js';
+import profileRouter from './routes/profile.route.js';
 
 const app = express();
 
@@ -19,12 +22,7 @@ app.get('/', (req, res) => {
 });
   
 app.use('/auth', authRouter);
-
-app.get('/profile', authMiddleware, async (req, res) => {
-    const user = await findUserById(req.user.id);
-    const {password, ...userData} = user;
-    res.json(userData);
-});
+app.use('/profile', profileRouter);
 
 async function startServer() {
     try {
@@ -47,6 +45,6 @@ startServer();
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT,() => {
+app.listen(PORT, '0.0.0.0',() => {
     console.log(`Started server on port ${PORT}`);
 });
