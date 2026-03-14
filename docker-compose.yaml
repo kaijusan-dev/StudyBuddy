@@ -13,7 +13,9 @@ services:
       - NODE_TLS_REJECT_UNAUTHORIZED=0
     depends_on:
       - db
-      
+    volumes:
+      - ./uploads:/app/uploads
+
   frontend:
     build: 
       context: ./frontend

@@ -10,9 +10,12 @@ export default function Input({name, label, type, state, setState}) {
                 name={name} 
                 id={name}
                 label={label}
-                value={state[name]}
+                value={state[name] || ""}
                 onChange={(e) => {
-                    setState({...state, [name]: e.target.value});
+                    setState(prev => ({
+                        ...prev,
+                        [name]: e.target.value
+                    }));
                 }}
             />
         </div>
