@@ -4,11 +4,8 @@ import scheduleRouter from './routes/schedule.route.js';
 import { fetchAndSaveSchedule } from './services/schedule.service.js';
 import { initializeScheduleTable, initializeUsersTable, connectWithRetry } from './db.js';
 import authRouter from './routes/auth.route.js';
-import authMiddleware from './middlewares/auth.middleware.js';
-import { findUserById } from './repositories/auth.repository.js';
-import { updateUser } from './repositories/profile.repository.js';
-import { validate } from './middlewares/validate.js';
 import profileRouter from './routes/profile.route.js';
+import path from 'path';
 
 const app = express();
 
@@ -23,6 +20,7 @@ app.get('/', (req, res) => {
   
 app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 async function startServer() {
     try {

@@ -27,10 +27,9 @@ function AuthProvider({children}) {
         } catch(err) {
             localStorage.removeItem('token');
             setUser(null);
+        } finally {
+            setLoading(false);
         }
-        
-        setLoading(false);
-
     }
 
     function login(userData, token) {

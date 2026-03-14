@@ -47,6 +47,7 @@ async function initializeUsersTable() {
           username TEXT UNIQUE,
           email TEXT UNIQUE,
           group_id INTEGER,
+          avatar TEXT,
           password TEXT
       );
   `;

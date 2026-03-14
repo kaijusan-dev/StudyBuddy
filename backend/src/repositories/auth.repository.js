@@ -26,10 +26,10 @@ const findUserByEmail = async (email) => {
 
 const createUser = async ({ username, email, group_id, password }) => {
   const res = await pool.query(
-    `INSERT INTO users (username, email, group_id, password)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO users (username, email, group_id, avatar, password)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [username, email, group_id, password]
+    [username, email, group_id, avatar, password]
   )
   return res.rows[0]
 };

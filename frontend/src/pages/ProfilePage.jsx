@@ -4,6 +4,7 @@ import SettingsForm from "../components/forms/SettingsForm";
 import { emailSettingsSchema, generalSettingsSchema, passwordSettingsSchema } from "../schemas/profile.schemas";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
+import AvatarUpload from "../components/avatar-upload/AvatarUpload";
 
 export default function ProfilePage() {
 
@@ -11,21 +12,10 @@ export default function ProfilePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const res = await api.get('/profile');
-                if (!res.data) {
-                    navigate('/auth/login');
-                    return;
-                }
-                setUser(res.data);
-            } catch (err) {
-                navigate('/auth/login');
-            }
-        };
-
-        loadUser();
-    }, []);
+        if (!user) {
+            navigate('/auth/login');
+        }
+    }, [user]);
 
     useEffect(() => {
         if (user) {
@@ -104,6 +94,8 @@ export default function ProfilePage() {
         <div className="ProfilePage">
             <h1 style={{ textAlign: 'center', marginTop: '20px' }}>Страница профиля</h1>
             <p style={{ textAlign: 'center' }}>не знаю что тут должно показываться, но есть настройки</p>
+
+            {user && <AvatarUpload user={user} onUpload={setUser} />}
 
             <p>Имя: {user?.username}</p>
             <p>Почта email: {user?.email}</p>

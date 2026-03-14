@@ -22,7 +22,7 @@ async function updateUser(id, data) {
         UPDATE users
         SET ${fields.join(', ')}
         WHERE id = $${index}
-        RETURNING id, username, email, group_id
+        RETURNING id, username, email, group_id, avatar
     `;
 
     const result = await pool.query(query, values);
