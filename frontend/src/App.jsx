@@ -4,6 +4,7 @@ import AuthPage from './pages/AuthPage';
 import WelcomePage from './pages/WelcomePage';
 import Layout from './components/layout/Layout';
 import ProfilePage from './pages/ProfilePage';
+import PetPage from './pages/PetPage';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/auth/register" element={<AuthPage type='register'/>} />
           <Route path="/auth/login" element={<AuthPage type='login' />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/pet" element={<PetPage />} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Route>
       </Routes>

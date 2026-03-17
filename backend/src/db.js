@@ -54,4 +54,18 @@ async function initializeUsersTable() {
   return await pool.query(createTableQuery);
 }
 
-export { pool, initializeScheduleTable, initializeUsersTable, connectWithRetry };
+async function initializePetsTable() {
+  const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS pets (
+          user_id INTEGER PRIMARY KEY,
+          hunger INTEGER DEFAULT 100,
+          happiness INTEGER DEFAULT 100,
+          energy INTEGER DEFAULT 100,
+          last_feed TIMESTAMPTZ,
+          last_play TIMESTAMPTZ
+      );
+  `;
+  return await pool.query(createTableQuery);
+}
+
+export { pool, initializeScheduleTable, initializeUsersTable, initializePetsTable, connectWithRetry };
