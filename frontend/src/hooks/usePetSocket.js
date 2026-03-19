@@ -7,31 +7,51 @@ export function usePetSocket(token) {
   useEffect(() => {
     if (!token) return;
 
-    const ws = new WebSocket(`ws://localhost:3000?token=${token}`);
-    socketRef.current = ws;
+    const host = window.location.hostname;
 
-    ws.onopen = () => console.log("Pet socket connected");
+    let ws;
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+    const connect = () => {
+      ws = new WebSocket(`ws://${host}:3000?token=${token}`);
 
-      if (data.type === "pet_state" || data.type === "pet_update") {
-        setPet(data.pet);
-      }
+      socketRef.current = ws;
+
+      ws.onopen = () => {
+        console.log("Pet socket connected");
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "pet_state" || data.type === "pet_update") {
+          setPet({...data.pet, last_updated: new Date()});
+        }
+        
+      };
+
+      ws.onclose = () => {
+        console.log("Socket closed, reconnecting...");
+        setTimeout(connect, 2000);
+      };
+
+      ws.onerror = (err) => {
+        ws.close();
+      };
     };
 
-    ws.onclose = () => console.log("Pet socket closed");
+    connect();
 
     return () => {
-      ws.close();
+      ws?.close();
     };
   }, [token]);
 
-  const feedPet = () => {
-    if (socketRef.current && pet) {
-      socketRef.current.send(JSON.stringify({ action: "feed" }));
-    }
+  const sendAction = (action) => {
+    socketRef.current?.send(JSON.stringify({ action }));
   };
 
-  return { pet, feedPet };
+  return {
+    pet,
+    feedPet: () => sendAction("feed"),
+  };
 }

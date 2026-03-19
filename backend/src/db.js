@@ -58,11 +58,10 @@ async function initializePetsTable() {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS pets (
           user_id INTEGER PRIMARY KEY,
-          hunger INTEGER DEFAULT 100,
+          fullness REAL DEFAULT 100,
           happiness INTEGER DEFAULT 100,
           energy INTEGER DEFAULT 100,
-          last_feed TIMESTAMPTZ,
-          last_play TIMESTAMPTZ
+          last_updated TIMESTAMPTZ
       );
   `;
   return await pool.query(createTableQuery);

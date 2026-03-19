@@ -20,7 +20,7 @@ export const createPetSocket = (server) => {
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decoded);
+
       const userId = decoded.id;
 
       console.log("Pet socket connected:", userId);
@@ -50,12 +50,18 @@ export const createPetSocket = (server) => {
 
       });
 
+      ws.on('error', (err) => {
+        if (err.name === 'TokenExpiredError') {
+          ws.send(JSON.stringify({ type: 'token_expired' }));
+          ws.close();
+        }
+      });
+
       ws.on("close", () => {
         console.log("Pet socket disconnected:", userId);
       });
 
     } catch (err) {
-
       console.error("socket error", err);
       ws.close();
     }

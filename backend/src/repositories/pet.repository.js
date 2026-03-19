@@ -30,7 +30,7 @@ const updatePet = async (user_id, data) => {
         UPDATE pets
         SET ${fields.join(', ')}
         WHERE user_id = $${index}
-        RETURNING user_id, hunger, happiness, energy, last_feed, last_play
+        RETURNING *
     `;
 
     const result = await pool.query(query, values);
