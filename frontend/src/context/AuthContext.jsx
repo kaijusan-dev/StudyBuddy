@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
-function AuthProvider({children}) {
+export function AuthProvider({children}) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         checkAuth();
@@ -24,9 +27,15 @@ function AuthProvider({children}) {
         try {
             const res = await api.get('/profile');
             setUser(res.data);
-        } catch(err) {
-            localStorage.removeItem('token');
-            setUser(null);
+        } 
+        catch(err) {
+
+            if (err.response?.status === 401) {
+                localStorage.removeItem('token');
+                setUser(null);
+            }
+            console.error("Auth check failed:", err);
+            
         } finally {
             setLoading(false);
         }
@@ -42,6 +51,19 @@ function AuthProvider({children}) {
         setUser(null);
     }
 
+    useEffect(() => {
+        const handleUnauthorized = () => {
+        logout();
+        navigate("/login");
+        };
+
+        window.addEventListener("unauthorized", handleUnauthorized);
+
+        return () => {
+        window.removeEventListener("unauthorized", handleUnauthorized);
+        };
+    }, [navigate]);
+
     return (
         <AuthContext.Provider value={{
             user,
@@ -53,6 +75,8 @@ function AuthProvider({children}) {
             {children}
         </AuthContext.Provider>
     )
-}
+};
 
-export {AuthProvider, AuthContext}
+export function useAuth() {
+  return useContext(AuthContext);
+}

@@ -1,6 +1,4 @@
 import pg from 'pg';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const { Pool } = pg;
 
@@ -12,7 +10,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-async function connectWithRetry(retries = 5, delay = 3000) {
+async function connectWithRetry(retries = 10, delay = 3000) {
   for (let i = 0; i < retries; i++) {
     try {
       await pool.query('SELECT 1');

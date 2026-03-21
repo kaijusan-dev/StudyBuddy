@@ -1,21 +1,13 @@
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import SettingsForm from "../components/forms/SettingsForm";
 import { emailSettingsSchema, generalSettingsSchema, passwordSettingsSchema } from "../schemas/profile.schemas";
 import api from "../api/api";
-import { useNavigate } from "react-router-dom";
 import AvatarUpload from "../components/avatar-upload/AvatarUpload";
 
 export default function ProfilePage() {
 
-    const {user, setUser} = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!user) {
-            navigate('/auth/login');
-        }
-    }, [user]);
+    const {user, setUser} = useAuth();
 
     useEffect(() => {
         if (user) {

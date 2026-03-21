@@ -1,7 +1,11 @@
 import styles from "./Avatar.module.css";
 
-export default function Avatar({ src, onClick }) {
-  const avatarUrl = src ? `/api/${src}` : "/default-avatar.png";
+export default function Avatar({ avatar, onClick }) {
+
+  const avatarUrl = avatar
+    ? `/api/uploads/avatars/${avatar}`
+    : "/default-avatar.png";
+
   return (
     <div className={styles.avatar} onClick={onClick}>
       <img

@@ -1,4 +1,7 @@
-export default function PetAvatar({ pet }) {
+import { usePet } from "../../context/PetSocketContext";
+
+export default function PetAvatar() {
+  const {pet} = usePet();
   const getMood = () => {
     if (pet.fullness < 30) return "angry";
     if (pet.energy < 20) return "sleep";

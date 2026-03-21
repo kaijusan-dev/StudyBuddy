@@ -1,7 +1,10 @@
-export default function PetActions({ pet, onFeed }) {
+import { usePet } from "../../context/PetSocketContext";
+
+export default function PetActions() {
+  const {pet, feedPet} = usePet();
   return (
     <div>
-      <button onClick={onFeed} disabled={pet.fullness == 100}>🍖 Feed</button>
+      <button onClick={feedPet} disabled={pet.fullness == 100}>🍖 Feed</button>
     </div>
   );
 }
