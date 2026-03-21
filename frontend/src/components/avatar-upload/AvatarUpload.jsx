@@ -29,7 +29,7 @@ export default function AvatarUpload({ user, onUpload }) {
   return (
     <div className="AvatarUpload">
 
-      <Avatar src={user?.avatar} onClick={handleClick}/>
+      <Avatar avatar={user?.avatar} onClick={handleClick}/>
 
       <input
         type="file"

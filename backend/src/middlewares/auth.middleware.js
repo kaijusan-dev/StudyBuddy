@@ -13,6 +13,6 @@ export default function authMiddleware(req, res, next) {
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ message: "token expired" });
         }
-        res.status(401).json({message: 'invalid token'});
+        return res.status(401).json({ message: "invalid_token" });
     }
 }

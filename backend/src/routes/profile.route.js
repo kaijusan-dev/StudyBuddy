@@ -7,6 +7,8 @@ import { updateProfileController } from '../controllers/profile.controller.js';
 import multer from "multer";
 import path from "path";
 import { updateAvatarController } from '../controllers/upload.controller.js';
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 const profileRouter = express.Router();
 
@@ -16,14 +18,22 @@ profileRouter.get('/', authMiddleware, async (req, res) => {
     res.json(userData);
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const uploadPath = path.join(__dirname, '../../uploads/avatars');
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 const storage = multer.diskStorage({
-  destination: "uploads/avatars",
+  destination: (req, file, cb) => {
+    cb(null, uploadPath);
+  },
   filename: (req, file, cb) => {
-
     const ext = path.extname(file.originalname);
-
     const filename = crypto.randomUUID() + ext;
-
     cb(null, filename);
   }
 });

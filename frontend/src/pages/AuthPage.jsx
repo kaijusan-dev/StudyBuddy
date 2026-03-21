@@ -4,8 +4,7 @@ import RegisterForm from '../components/forms/RegisterForm';
 import LoginForm from '../components/forms/LoginForm';
 import api from '../api/api';
 import { loginSchema, registerSchema } from '../schemas/auth.schemas';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function AuthPage({type}) {
 
@@ -21,7 +20,7 @@ export default function AuthPage({type}) {
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
-    const {login} = useContext(AuthContext);
+    const {login} = useAuth();
 
     const handleSubmit = async () => {
 

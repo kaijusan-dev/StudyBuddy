@@ -1,0 +1,47 @@
+.pet-avatar {
+  font-size: 80px;
+  transition: transform 0.3s ease;
+}
+
+/* Idle — лёгкое дыхание */
+.pet-avatar.idle {
+  animation: idle-bounce 2s infinite;
+}
+
+@keyframes idle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Happy — прыгает */
+.pet-avatar.happy {
+  animation: happy-jump 0.6s infinite;
+}
+
+@keyframes happy-jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Sleep — плавное покачивание */
+.pet-avatar.sleep {
+  animation: sleep 3s infinite;
+  opacity: 0.7;
+}
+
+@keyframes sleep {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Angry — тряска */
+.pet-avatar.angry {
+  animation: shake 0.3s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}

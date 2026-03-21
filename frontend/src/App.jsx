@@ -1,26 +1,23 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import SchedulePage from './pages/SchedulePage';
-import AuthPage from './pages/AuthPage';
-import WelcomePage from './pages/WelcomePage';
+import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import ProfilePage from './pages/ProfilePage';
+import ProtectedRoute from './components/protected-route/ProtectedRoute';
+import { routes } from './routesConfig';
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout/>}>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/auth/register" element={<AuthPage type='register'/>} />
-          <Route path="/auth/login" element={<AuthPage type='login' />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="*" element={<h1>Page Not Found</h1>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-};
+    <Routes>
+      <Route element={<Layout />}>
+        {routes.map(({ path, element, protected: isProtected }) => (
+          <Route
+            key={path}
+            path={path}
+            element={isProtected ? <ProtectedRoute>{element}</ProtectedRoute> : element}
+          />
+        ))}
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Route>
+    </Routes>
+  );
+}
 
 export default App;

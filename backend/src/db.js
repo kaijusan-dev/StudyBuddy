@@ -1,6 +1,4 @@
 import pg from 'pg';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const { Pool } = pg;
 
@@ -12,7 +10,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-async function connectWithRetry(retries = 5, delay = 3000) {
+async function connectWithRetry(retries = 10, delay = 3000) {
   for (let i = 0; i < retries; i++) {
     try {
       await pool.query('SELECT 1');
@@ -54,4 +52,17 @@ async function initializeUsersTable() {
   return await pool.query(createTableQuery);
 }
 
-export { pool, initializeScheduleTable, initializeUsersTable, connectWithRetry };
+async function initializePetsTable() {
+  const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS pets (
+          user_id INTEGER PRIMARY KEY,
+          fullness REAL DEFAULT 100,
+          happiness INTEGER DEFAULT 100,
+          energy INTEGER DEFAULT 100,
+          last_updated TIMESTAMPTZ
+      );
+  `;
+  return await pool.query(createTableQuery);
+}
+
+export { pool, initializeScheduleTable, initializeUsersTable, initializePetsTable, connectWithRetry };

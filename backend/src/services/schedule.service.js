@@ -1,9 +1,16 @@
 import ical from 'node-ical';
+import fetch from 'node-fetch';
 import {pool} from '../db.js';
+import https from 'https';
 
 async function fetchSchedule(calendarUrl) {
   console.log("Fetching schedule...");
-  const res = await fetch(calendarUrl);
+
+  const agent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+
+  const res = await fetch(calendarUrl, {agent});
   const text = await res.text();
 
   const events = ical.parseICS(text);

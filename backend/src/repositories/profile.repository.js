@@ -1,6 +1,6 @@
 import { pool } from "../db.js";
 
-async function updateUser(id, data) {
+const updateUser = async (id, data) => {
 
     if (Object.keys(data).length === 0) {
         throw new Error("No fields to update");

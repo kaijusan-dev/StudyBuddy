@@ -1,48 +1,62 @@
-import express from 'express'
-import cors from "cors";
-import scheduleRouter from './routes/schedule.route.js';
+import app from "./app.js";
+import express from 'express';
+import http from 'http';
+import { createPetSocket } from "./ws/pet.socket.js";
+import {
+  connectWithRetry,
+  initializePetsTable,
+  initializeScheduleTable,
+  initializeUsersTable
+} from "./db.js";
 import { fetchAndSaveSchedule } from './services/schedule.service.js';
-import { initializeScheduleTable, initializeUsersTable, connectWithRetry } from './db.js';
-import authRouter from './routes/auth.route.js';
-import profileRouter from './routes/profile.route.js';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import path from "path";
 
-const app = express();
+const server = http.createServer(app);
+createPetSocket(server);
 
-app.use(express.json());
-app.use(cors({
-    origin: 'http://localhost:5173'
-}));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.get('/', (req, res) => {
-    res.json({ message: "Backend work!!!!!!"});
-});
-  
-app.use('/auth', authRouter);
-app.use('/profile', profileRouter);
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+const uploadPath = path.join(__dirname, '../uploads');
+
+// отдача файлов
+app.use('/api/uploads', express.static(uploadPath));
 
 async function startServer() {
     try {
         await connectWithRetry();
         await initializeScheduleTable();
         await initializeUsersTable();
+        await initializePetsTable();
 
         const calendarUrl = 'https://ical.psu.ru/calendars/R5CGGG87TW36X3D6';
         await fetchAndSaveSchedule(calendarUrl);
 
         console.log('Initial schedule fetch and save completed');
 
-        app.use('/schedule', scheduleRouter);   
-
     } catch (err) {
         console.error('Error starting server:', err);
     }
 }
-startServer();
+await startServer();
+
+// production
+if (process.env.MODE === 'production') {
+
+  const distPath = path.join(__dirname, "../frontend");
+
+  // отдаём статику фронта
+  app.use(express.static(distPath));
+
+  // fallback для SPA (только GET, кроме /api)
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0',() => {
+server.listen(PORT, '0.0.0.0',() => {
     console.log(`Started server on port ${PORT}`);
 });
