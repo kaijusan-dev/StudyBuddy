@@ -1,0 +1,25 @@
+.Schedule {
+    padding: 20px;
+    max-width: 1200px; /* Ограничиваем максимальную ширину для больших экранов */
+    margin: 0 auto; /* Центрируем контейнер */
+    font-family: Arial, sans-serif;
+}
+
+.Schedule table {
+    width: 100%; /* Таблица на всю ширину контейнера */
+    border-collapse: collapse; /* Убираем двойные границы */
+    table-layout: fixed; /* Равномерная ширина колонок */
+}
+
+.Schedule th, .Schedule td {
+    border: 1px solid #ddd; /* Лёгкие границы */
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word; /* Текст переносится, если длинный */
+}
+
+.Schedule th {
+    background-color: #4CAF50; /* Зеленая шапка */
+    color: white;
+    font-weight: bold;
+}

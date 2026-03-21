@@ -1,17 +1,23 @@
-import { useState } from 'react'
-import api from './api/api'
-import { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import ProtectedRoute from './components/protected-route/ProtectedRoute';
+import { routes } from './routesConfig';
 
 function App() {
-
-  useEffect(() => {
-    api.get('/').then( (res) => {
-      console.log(res.data.message);
-    })}, []);
-
   return (
-    <h1>По базе минимально</h1>
-  )
-};
+    <Routes>
+      <Route element={<Layout />}>
+        {routes.map(({ path, element, protected: isProtected }) => (
+          <Route
+            key={path}
+            path={path}
+            element={isProtected ? <ProtectedRoute>{element}</ProtectedRoute> : element}
+          />
+        ))}
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Route>
+    </Routes>
+  );
+}
 
 export default App;
