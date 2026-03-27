@@ -32,7 +32,8 @@ async function initializeScheduleTable() {
           start_time TIMESTAMPTZ,
           end_time TIMESTAMPTZ,
           summary TEXT,
-          group_id INTEGER
+          user_id INTEGER,
+          completed BOOLEAN DEFAULT FALSE
       );
   `;
   return await pool.query(createTableQuery);
@@ -46,7 +47,8 @@ async function initializeUsersTable() {
           email TEXT UNIQUE,
           group_id INTEGER,
           avatar TEXT,
-          password TEXT
+          password TEXT,
+          calendar_url TEXT
       );
   `;
   return await pool.query(createTableQuery);

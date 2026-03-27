@@ -1,7 +1,8 @@
 import ical from 'node-ical';
 import fetch from 'node-fetch';
-import {pool} from '../db.js';
 import https from 'https';
+import { getSchedule, getScheduleUrl, saveSchedule } from '../repositories/schedule.repository.js';
+import { updateUser } from '../repositories/profile.repository.js';
 
 async function fetchSchedule(calendarUrl) {
   console.log("Fetching schedule...");
@@ -30,41 +31,38 @@ async function fetchSchedule(calendarUrl) {
   return schedule;
 }
 
-async function saveScheduleToDB(schedule) {
-    const client = await pool.connect();
-    try {
-        await client.query('BEGIN');
-
-        for (const event of schedule) {
-            await client.query(
-                `INSERT INTO schedule (uid, start_time, end_time, summary, group_id) 
-                 VALUES ($1, $2, $3, $4, $5)
-                 ON CONFLICT (uid) DO UPDATE
-                 SET start_time = EXCLUDED.start_time,
-                     end_time = EXCLUDED.end_time,
-                     summary = EXCLUDED.summary,
-                     group_id = EXCLUDED.group_id;`,
-                [event.uid, event.start, event.end, event.summary, 17]
-            );
-        }
-
-        await client.query('COMMIT');
-    } catch (err) {
-        await client.query('ROLLBACK');
-        throw err;
-    } finally {
-        client.release();
-    }
-}
-
-async function fetchAndSaveSchedule(calendarUrl) {
+async function fetchAndSaveSchedule(calendarUrl, user_id) {
     try {
         const schedule = await fetchSchedule(calendarUrl);
-        await saveScheduleToDB(schedule);
+        await updateUser(user_id, { calendar_url: calendarUrl });
+        return await saveSchedule(schedule, user_id);
     }
     catch (err) {
         console.error('Error fetching or saving schedule:', err);
     }
 }
 
-export { fetchSchedule, saveScheduleToDB, fetchAndSaveSchedule };
+async function getScheduleFromDB(user_id) {
+    const result = await getSchedule(user_id);
+    if (!result) {
+        let newSchedule;
+        try {
+            const calendarUrl = await getScheduleUrl(user_id);
+            if (calendarUrl) {
+                newSchedule = await fetchAndSaveSchedule(calendarUrl, user_id);
+            } else {
+                console.warn('No calendar URL found for user:', user_id);
+            }
+        }
+        catch (err) {
+            console.error('Error fetching schedule URL or updating schedule:', err);
+        }
+        finally {
+            return newSchedule || [];
+        }
+        
+    }
+    return result;
+}
+
+export { getScheduleFromDB, fetchAndSaveSchedule };

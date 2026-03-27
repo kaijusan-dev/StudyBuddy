@@ -1,0 +1,75 @@
+import {pool} from '../db.js';
+
+async function getSchedule(user_id) {
+    const res = await pool.query('SELECT * FROM schedule WHERE user_id = $1', [user_id]);
+    return res.rows;
+}
+
+async function getScheduleUrl(user_id) {
+    const res = await pool.query('SELECT calendar_url FROM users WHERE id = $1', [user_id]);
+    return res.rows[0] ? res.rows[0].calendar_url : null;
+}
+
+async function saveSchedule(schedule, user_id) {
+    const client = await pool.connect();
+    let result;
+    try {
+        await client.query('BEGIN');
+
+        for (const event of schedule) {
+            result = await client.query(
+                `INSERT INTO schedule (uid, start_time, end_time, summary, user_id, completed) 
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                 ON CONFLICT (uid) DO UPDATE
+                 SET start_time = EXCLUDED.start_time,
+                     end_time = EXCLUDED.end_time,
+                     summary = EXCLUDED.summary,
+                     user_id = EXCLUDED.user_id,
+                     completed = EXCLUDED.completed
+                 RETURNING *`,
+                [event.uid, event.start, event.end, event.summary, user_id, false]
+            );
+        }
+
+        await client.query('COMMIT');
+    } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+    } finally {
+        client.release();
+        return result;
+    }
+}
+
+const updateSchedule = async (id, data) => {
+
+    if (Object.keys(data).length === 0) {
+        throw new Error("No fields to update");
+    }
+
+    const fields = [];
+    const values = [];
+    let index = 1;
+
+    for (const key in data) {
+        fields.push(`${key} = $${index}`);
+        values.push(data[key]);
+        index++;
+    }
+
+    values.push(id);
+
+    const query = `
+        UPDATE schedule
+        SET ${fields.join(', ')}
+        WHERE id = $${index}
+        RETURNING id, uid, start_time, end_time, summary, user_id, completed
+    `;
+
+    const result = await pool.query(query, values);
+
+    return result.rows[0];
+}
+
+
+export { getSchedule, saveSchedule, getScheduleUrl, updateSchedule };

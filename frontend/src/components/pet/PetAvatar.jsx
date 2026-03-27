@@ -2,6 +2,7 @@ import { usePet } from "../../context/PetSocketContext";
 
 export default function PetAvatar() {
   const {pet} = usePet();
+  
   const getMood = () => {
     if (pet.fullness < 30) return "angry";
     if (pet.energy < 20) return "sleep";
@@ -13,12 +14,9 @@ export default function PetAvatar() {
 
   return (
     <div className={`pet-avatar ${mood}`}>
-      <div className="pet-face">
-        {mood === "angry" && "😡"}
-        {mood === "sleep" && "😴"}
-        {mood === "happy" && "😄"}
-        {mood === "idle" && "🙂"}
-      </div>
+      {mood === "angry" && <img src="/cat/angry.png" />}
+      {mood === "happy" && <img src="/cat/happy.png" />}
+      {mood === "idle" && <img src="/cat/idle.png" />}
     </div>
   );
 }

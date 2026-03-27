@@ -1,7 +1,9 @@
 .Layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  grid-template-rows: 50px 1fr;
 }
 
 .Content {

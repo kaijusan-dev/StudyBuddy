@@ -8,7 +8,6 @@ import {
   initializeScheduleTable,
   initializeUsersTable
 } from "./db.js";
-import { fetchAndSaveSchedule } from './services/schedule.service.js';
 import { fileURLToPath } from 'url';
 import path from "path";
 
@@ -30,10 +29,7 @@ async function startServer() {
         await initializeUsersTable();
         await initializePetsTable();
 
-        const calendarUrl = 'https://ical.psu.ru/calendars/R5CGGG87TW36X3D6';
-        await fetchAndSaveSchedule(calendarUrl);
-
-        console.log('Initial schedule fetch and save completed');
+        console.log('Tables initialized');
 
     } catch (err) {
         console.error('Error starting server:', err);
@@ -49,7 +45,7 @@ if (process.env.MODE === 'production') {
   // отдаём статику фронта
   app.use(express.static(distPath));
 
-  // fallback для SPA (только GET, кроме /api)
+  // fallback для SPA (только GET запросы доступны, кроме /api)
   app.get(/^\/(?!api).*/, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
