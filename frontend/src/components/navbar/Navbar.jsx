@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import styles from './Navbar.module.css';
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
-    const {user, logout} = useContext(AuthContext);
+    const {user, logout} = useAuth();
     return (
         <nav className={styles.Navbar}>
             <Link to={'/'} className={styles.Logo}>

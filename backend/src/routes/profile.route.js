@@ -1,7 +1,6 @@
 import express from 'express'
 import { validate } from '../middlewares/validate.js';
 import { emailSettingsSchema, generalSettingsSchema, passwordSettingsSchema } from '../schemas/profile.schemas.js';
-import authMiddleware from '../middlewares/auth.middleware.js';
 import { findUserById } from '../repositories/auth.repository.js';
 import { updateProfileController } from '../controllers/profile.controller.js';
 import multer from "multer";
@@ -12,7 +11,7 @@ import { fileURLToPath } from "url";
 
 const profileRouter = express.Router();
 
-profileRouter.get('/', authMiddleware, async (req, res) => {
+profileRouter.get('/', async (req, res) => {
     const user = await findUserById(req.user.id);
     const {password, ...userData} = user;
     res.json(userData);
@@ -49,10 +48,10 @@ const upload = multer({
   }
 });
 
-profileRouter.post('/avatar', authMiddleware, upload.single("avatar"), updateAvatarController);
+profileRouter.post('/avatar', upload.single("avatar"), updateAvatarController);
 
-profileRouter.patch('/general', authMiddleware, validate(generalSettingsSchema), updateProfileController);
-profileRouter.patch('/email', authMiddleware, validate(emailSettingsSchema), updateProfileController);
-profileRouter.patch('/password', authMiddleware, validate(passwordSettingsSchema), updateProfileController);
+profileRouter.patch('/general', validate(generalSettingsSchema), updateProfileController);
+profileRouter.patch('/email', validate(emailSettingsSchema), updateProfileController);
+profileRouter.patch('/password', validate(passwordSettingsSchema), updateProfileController);
 
 export default profileRouter;

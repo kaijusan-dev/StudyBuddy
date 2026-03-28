@@ -1,27 +1,44 @@
 import express from 'express'
-import {pool} from '../db.js';
+import { fetchAndSaveSchedule, getScheduleFromDB } from '../services/schedule.service.js';
+import { updateSchedule } from '../repositories/schedule.repository.js';
+import { validate } from '../middlewares/validate.js';
+import { calendarUrlSchema } from '../schemas/schedule.schemas.js';
 
 const scheduleRouter = express.Router();
 
 scheduleRouter.get('/', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM schedule WHERE group_id = $1', [17]);
-        res.json(result.rows);
+        const result = await getScheduleFromDB(req.user.id);
+        res.json(result);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch schedule' });
     }
 });
 
-// scheduleRouter.post('/update', async (req, res) => {
-//     try {
-//         const calendarUrl = 'https://ical.psu.ru/calendars/R5CGGG87TW36X3D6';
-//         await fetchAndSaveSchedule(calendarUrl);
-//         res.json({ message: 'Schedule updated' });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Failed to update schedule' });
-//     }
-// });
+scheduleRouter.post('/:id/complete', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await updateSchedule(id, req.user.id, { completed: true });
+        res.json({ message: 'Task marked as complete' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update task status' });
+    }
+});
+
+scheduleRouter.post('/update', validate(calendarUrlSchema), async (req, res) => {
+    try {
+        console.log(req.body);
+        const {calendar_url} = req.body;
+        const user_id = req.user.id;
+        await fetchAndSaveSchedule(calendar_url, user_id);
+        res.status(200).json({ message: 'Schedule updated' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update schedule' });
+    }
+});
 
 export default scheduleRouter;
