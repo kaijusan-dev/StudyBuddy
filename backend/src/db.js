@@ -28,12 +28,13 @@ async function initializeScheduleTable() {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS schedule (
           id SERIAL PRIMARY KEY,
-          uid TEXT UNIQUE,
+          uid TEXT,
           start_time TIMESTAMPTZ,
           end_time TIMESTAMPTZ,
           summary TEXT,
           user_id INTEGER,
-          completed BOOLEAN DEFAULT FALSE
+          completed BOOLEAN DEFAULT FALSE,
+          UNIQUE (uid, user_id)
       );
   `;
   return await pool.query(createTableQuery);
@@ -48,10 +49,23 @@ async function initializeUsersTable() {
           group_id INTEGER,
           avatar TEXT,
           password TEXT,
-          calendar_url TEXT
+          calendar_url TEXT,
+          role user_role DEFAULT 'user'
       );
   `;
   return await pool.query(createTableQuery);
+}
+
+async function initializeUserRoleEnum() {
+  const query = `
+    DO $$ BEGIN
+      CREATE TYPE user_role AS ENUM ('admin', 'user');
+    EXCEPTION
+      WHEN duplicate_object THEN null;
+    END $$;
+  `;
+  
+  return await pool.query(query);
 }
 
 async function initializePetsTable() {
@@ -67,4 +81,4 @@ async function initializePetsTable() {
   return await pool.query(createTableQuery);
 }
 
-export { pool, initializeScheduleTable, initializeUsersTable, initializePetsTable, connectWithRetry };
+export { pool, initializeScheduleTable, initializeUsersTable, initializeUserRoleEnum, initializePetsTable, connectWithRetry };

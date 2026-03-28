@@ -6,26 +6,19 @@ import {
   connectWithRetry,
   initializePetsTable,
   initializeScheduleTable,
+  initializeUserRoleEnum,
   initializeUsersTable
 } from "./db.js";
-import { fileURLToPath } from 'url';
 import path from "path";
 
 const server = http.createServer(app);
 createPetSocket(server);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const uploadPath = path.join(__dirname, '../uploads');
-
-// отдача файлов
-app.use('/api/uploads', express.static(uploadPath));
-
 async function startServer() {
     try {
         await connectWithRetry();
         await initializeScheduleTable();
+        await initializeUserRoleEnum();
         await initializeUsersTable();
         await initializePetsTable();
 
