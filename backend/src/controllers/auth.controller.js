@@ -13,7 +13,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const user = await loginUser(req.body);
-        const token = await generateToken({id: user.id, role: user.role});
+        const token = await generateToken({id: user.id});
         res.status(200).json({user, token});
     } catch(err) {
         res.status(400).json({message: err.message});
