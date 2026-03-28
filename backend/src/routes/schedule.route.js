@@ -20,7 +20,7 @@ scheduleRouter.post('/:id/complete', async (req, res) => {
     const { id } = req.params;
 
     try {
-        await updateSchedule(id, { completed: true });
+        await updateSchedule(id, req.user.id, { completed: true });
         res.json({ message: 'Task marked as complete' });
     } catch (err) {
         console.error(err);

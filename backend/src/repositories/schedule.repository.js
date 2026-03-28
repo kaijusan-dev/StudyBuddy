@@ -20,12 +20,10 @@ async function saveSchedule(schedule, user_id) {
             result = await client.query(
                 `INSERT INTO schedule (uid, start_time, end_time, summary, user_id, completed) 
                  VALUES ($1, $2, $3, $4, $5, $6)
-                 ON CONFLICT (uid) DO UPDATE
+                 ON CONFLICT (uid, user_id) DO UPDATE
                  SET start_time = EXCLUDED.start_time,
                      end_time = EXCLUDED.end_time,
-                     summary = EXCLUDED.summary,
-                     user_id = EXCLUDED.user_id,
-                     completed = EXCLUDED.completed
+                     summary = EXCLUDED.summary
                  RETURNING *`,
                 [event.uid, event.start, event.end, event.summary, user_id, false]
             );
@@ -41,8 +39,7 @@ async function saveSchedule(schedule, user_id) {
     }
 }
 
-const updateSchedule = async (id, data) => {
-
+const updateSchedule = async (id, user_id, data) => {
     if (Object.keys(data).length === 0) {
         throw new Error("No fields to update");
     }
@@ -52,24 +49,26 @@ const updateSchedule = async (id, data) => {
     let index = 1;
 
     for (const key in data) {
+        if (key === 'user_id') continue;
         fields.push(`${key} = $${index}`);
         values.push(data[key]);
         index++;
     }
 
     values.push(id);
+    values.push(user_id);
 
     const query = `
         UPDATE schedule
         SET ${fields.join(', ')}
-        WHERE id = $${index}
+        WHERE id = $${index} AND user_id = $${index + 1}
         RETURNING id, uid, start_time, end_time, summary, user_id, completed
     `;
 
     const result = await pool.query(query, values);
 
     return result.rows[0];
-}
+};
 
 
 export { getSchedule, saveSchedule, getScheduleUrl, updateSchedule };
