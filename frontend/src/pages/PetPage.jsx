@@ -42,8 +42,11 @@ export default function PetPage() {
     const {calendar_url} = result.data;
     
     await api.post('/schedule/update', {calendar_url});
-
+    
     handleCloseModal();
+
+    setIsSchedule(true);
+    
   } catch (err) {
       console.error(err);
       setErrors({
@@ -100,6 +103,7 @@ export default function PetPage() {
               setState={setState} 
               errors={errors} 
               handleSubmit={handleSubmit}
+              handleCloseModal={handleCloseModal}
             />
           }
         </Modal>
