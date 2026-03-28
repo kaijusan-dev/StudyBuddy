@@ -3,6 +3,10 @@ import cors from "cors";
 import authRouter from './routes/auth.route.js';
 import profileRouter from './routes/profile.route.js';
 import scheduleRouter from './routes/schedule.route.js';
+import authMiddleware from './middlewares/auth.middleware.js';
+import adminMiddleware from './middlewares/admin.middleware.js';
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 
@@ -12,7 +16,15 @@ app.use(cors({
 }));
 
 app.use('/api/auth', authRouter);
-app.use('/api/profile', profileRouter);
-app.use('/api/schedule', scheduleRouter); 
+app.use('/api/profile', authMiddleware, profileRouter);
+app.use('/api/schedule', authMiddleware, scheduleRouter); 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const uploadPath = path.join(__dirname, '../uploads');
+
+// отдача файлов
+app.use('/api/uploads', express.static(uploadPath));
 
 export default app;
