@@ -14,7 +14,7 @@ export default function ScheduleForm({state, setState, handleSubmit, handleClose
             {errors.server && <Error message={errors.server} />}
 
             <Input name = 'calendar_url' label= 'Ссылка на расписание ЕТИС' type='text' state={state} setState={setState}/>
-            {errors.username && <Error message={errors.username} />}
+            {errors.calendar_url && <Error message={errors.calendar_url} />}
 
             <hr />
             <button type="submit">Отправить</button>

@@ -11,6 +11,7 @@ const updateUser = async (id, data) => {
     let index = 1;
 
     for (const key in data) {
+        if (key === 'role') continue;
         fields.push(`${key} = $${index}`);
         values.push(data[key]);
         index++;

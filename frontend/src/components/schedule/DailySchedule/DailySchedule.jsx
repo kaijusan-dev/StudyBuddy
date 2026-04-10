@@ -16,6 +16,7 @@ export default function DailySchedule({handleOpenModal}) {
     if(!schedule) return null;
 
     const today = new Date();
+    today.setHours(0,0,0,0);
 
     const [now, setNow] = useState(new Date());
 
@@ -80,14 +81,16 @@ export default function DailySchedule({handleOpenModal}) {
                     >
                         <div>
                             <p>{event.summary}</p>
-                            <span>{`${formatTime(event.start_time)}-${formatTime(event.end_time)}`}</span>
+                             <span>
+                                {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                             </span>
                         </div>
 
                         <button
                             disabled={!isAvailable(event) || event.completed}
                             onClick={() => completeEvent(event.id)}
                         >
-                            {event.completed ? '✔' : 'Отмечено'}
+                            {event.completed ? '✔' : 'Отметить'}
                         </button>
                     </div>
                 ))

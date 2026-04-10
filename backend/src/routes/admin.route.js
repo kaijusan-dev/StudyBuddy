@@ -3,6 +3,14 @@ import * as adminController from '../controllers/admin.controller.js'
 
 const adminRouter = express.Router();
 
-adminRouter.post('/something',  adminController.something);
+adminRouter.get('/users', adminController.getUsers);
+
+adminRouter.delete('/users/:id', adminController.deleteUser);
+
+adminRouter.post('/toggle-role/:id', adminController.toggleRole);
+
+adminRouter.post('/schedule', adminController.addEvent);
+
+adminRouter.delete('/schedule/:id', adminController.deleteEvent);
 
 export default adminRouter;

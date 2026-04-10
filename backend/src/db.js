@@ -28,13 +28,11 @@ async function initializeScheduleTable() {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS schedule (
           id SERIAL PRIMARY KEY,
-          uid TEXT,
-          start_time TIMESTAMPTZ,
-          end_time TIMESTAMPTZ,
-          summary TEXT,
-          user_id INTEGER,
-          completed BOOLEAN DEFAULT FALSE,
-          UNIQUE (uid, user_id)
+          start_time TIMESTAMPTZ NOT NULL,
+          end_time TIMESTAMPTZ NOT NULL,
+          summary TEXT NOT NULL,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          completed BOOLEAN DEFAULT FALSE NOT NULL
       );
   `;
   return await pool.query(createTableQuery);
@@ -44,13 +42,13 @@ async function initializeUsersTable() {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS users (
           id SERIAL PRIMARY KEY,
-          username TEXT UNIQUE,
-          email TEXT UNIQUE,
-          group_id INTEGER,
+          username TEXT UNIQUE NOT NULL,
+          email TEXT UNIQUE NOT NULL,
+          group_id INTEGER NOT NULL,
           avatar TEXT,
-          password TEXT,
+          password TEXT NOT NULL,
           calendar_url TEXT,
-          role user_role DEFAULT 'user'
+          role user_role DEFAULT 'user' NOT NULL
       );
   `;
   return await pool.query(createTableQuery);
@@ -71,11 +69,11 @@ async function initializeUserRoleEnum() {
 async function initializePetsTable() {
   const createTableQuery = `
       CREATE TABLE IF NOT EXISTS pets (
-          user_id INTEGER PRIMARY KEY,
+          user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
           fullness REAL DEFAULT 100,
           happiness INTEGER DEFAULT 100,
           energy INTEGER DEFAULT 100,
-          last_updated TIMESTAMPTZ
+          last_updated TIMESTAMPTZ DEFAULT NOW()
       );
   `;
   return await pool.query(createTableQuery);

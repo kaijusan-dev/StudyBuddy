@@ -12,30 +12,36 @@ async function getScheduleUrl(user_id) {
 
 async function saveSchedule(schedule, user_id) {
     const client = await pool.connect();
-    let result;
+
     try {
         await client.query('BEGIN');
 
+        await client.query(
+            'DELETE FROM schedule WHERE user_id = $1',
+            [user_id]
+        );
+
         for (const event of schedule) {
-            result = await client.query(
-                `INSERT INTO schedule (uid, start_time, end_time, summary, user_id, completed) 
-                 VALUES ($1, $2, $3, $4, $5, $6)
-                 ON CONFLICT (uid, user_id) DO UPDATE
-                 SET start_time = EXCLUDED.start_time,
-                     end_time = EXCLUDED.end_time,
-                     summary = EXCLUDED.summary
-                 RETURNING *`,
-                [event.uid, event.start, event.end, event.summary, user_id, false]
+            await client.query(
+                `INSERT INTO schedule (start_time, end_time, summary, user_id, completed)
+                 VALUES ($1, $2, $3, $4, $5)`,
+                [
+                    event.start,
+                    event.end,
+                    event.summary,
+                    user_id,
+                    event.completed || false
+                ]
             );
         }
 
         await client.query('COMMIT');
+
     } catch (err) {
         await client.query('ROLLBACK');
         throw err;
     } finally {
         client.release();
-        return result;
     }
 }
 
@@ -62,7 +68,7 @@ const updateSchedule = async (id, user_id, data) => {
         UPDATE schedule
         SET ${fields.join(', ')}
         WHERE id = $${index} AND user_id = $${index + 1}
-        RETURNING id, uid, start_time, end_time, summary, user_id, completed
+        RETURNING id, start_time, end_time, summary, user_id, completed
     `;
 
     const result = await pool.query(query, values);
@@ -70,5 +76,41 @@ const updateSchedule = async (id, user_id, data) => {
     return result.rows[0];
 };
 
+const addEventToSchedule = async (event) => {
+    const {
+        start_time,
+        end_time,
+        summary,
+        user_id
+    } = event;
 
-export { getSchedule, saveSchedule, getScheduleUrl, updateSchedule };
+    const query = `
+        INSERT INTO schedule (start_time, end_time, summary, user_id)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *;
+    `;
+
+    const res = await pool.query(query, [
+        start_time,
+        end_time,
+        summary,
+        user_id
+    ]);
+
+    return res.rows[0] || null;
+};
+
+const deleteEventFromSchedule = async (id) => {
+
+    const query = `
+        DELETE FROM schedule WHERE id = $1 RETURNING *;
+    `;
+
+    const res = await pool.query(query, [
+        id,
+    ]);
+
+    return res.rows[0] || null;
+};
+
+export { getSchedule, saveSchedule, getScheduleUrl, updateSchedule, addEventToSchedule, deleteEventFromSchedule };

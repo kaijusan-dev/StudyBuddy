@@ -10,4 +10,4 @@ export const routes = [
   { path: '/profile', element: <ProfilePage />, protected: true },
   { path: '/auth/login', element: <AuthPage type="login" />, protected: false },
   { path: '/auth/register', element: <AuthPage type="register" />, protected: false },
-];
+];  

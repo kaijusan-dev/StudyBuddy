@@ -1,6 +1,16 @@
-.body {
-    position: fixed;
-    width: 100%;
+* {
+    
+  max-width: 100%;
+}
+
+body {
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+  max-width: 100%; /* чтобы не вылезало за экран */
+  overflow-x: hidden; /* запрещаем горизонтальный скролл */
+  margin: 0;
+  padding: 0;
 }
 
 .RegisterForm {

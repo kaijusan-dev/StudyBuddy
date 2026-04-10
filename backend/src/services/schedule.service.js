@@ -1,7 +1,7 @@
 import ical from 'node-ical';
 import fetch from 'node-fetch';
 import https from 'https';
-import { getSchedule, getScheduleUrl, saveSchedule } from '../repositories/schedule.repository.js';
+import * as scheduleRepository from '../repositories/schedule.repository.js';
 import { updateUser } from '../repositories/profile.repository.js';
 
 async function fetchSchedule(calendarUrl) {
@@ -20,7 +20,6 @@ async function fetchSchedule(calendarUrl) {
     const event = events[key];
     if (event.type === "VEVENT") {
         schedule.push({
-          uid: event.uid,
           start: event.start,
           end: event.end,
           summary: event.summary,
@@ -35,7 +34,7 @@ async function fetchAndSaveSchedule(calendarUrl, user_id) {
     try {
         const schedule = await fetchSchedule(calendarUrl);
         await updateUser(user_id, { calendar_url: calendarUrl });
-        return await saveSchedule(schedule, user_id);
+        return await scheduleRepository.saveSchedule(schedule, user_id);
     }
     catch (err) {
         console.error('Error fetching or saving schedule:', err);
@@ -43,11 +42,11 @@ async function fetchAndSaveSchedule(calendarUrl, user_id) {
 }
 
 async function getScheduleFromDB(user_id) {
-    const result = await getSchedule(user_id);
+    const result = await scheduleRepository.getSchedule(user_id);
     if (!result) {
         let newSchedule;
         try {
-            const calendarUrl = await getScheduleUrl(user_id);
+            const calendarUrl = await scheduleRepository.getScheduleUrl(user_id);
             if (calendarUrl) {
                 newSchedule = await fetchAndSaveSchedule(calendarUrl, user_id);
             } else {

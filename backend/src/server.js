@@ -16,10 +16,12 @@ createPetSocket(server);
 
 async function startServer() {
     try {
+        
         await connectWithRetry();
-        await initializeScheduleTable();
+
         await initializeUserRoleEnum();
         await initializeUsersTable();
+        await initializeScheduleTable();
         await initializePetsTable();
 
         console.log('Tables initialized');

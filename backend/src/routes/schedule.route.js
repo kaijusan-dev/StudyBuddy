@@ -1,44 +1,14 @@
 import express from 'express'
-import { fetchAndSaveSchedule, getScheduleFromDB } from '../services/schedule.service.js';
-import { updateSchedule } from '../repositories/schedule.repository.js';
+import * as scheduleController from '../controllers/schedule.controller.js';
 import { validate } from '../middlewares/validate.js';
 import { calendarUrlSchema } from '../schemas/schedule.schemas.js';
 
 const scheduleRouter = express.Router();
 
-scheduleRouter.get('/', async (req, res) => {
-    try {
-        const result = await getScheduleFromDB(req.user.id);
-        res.json(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch schedule' });
-    }
-});
+scheduleRouter.get('/', scheduleController.getSchedule);
 
-scheduleRouter.post('/:id/complete', async (req, res) => {
-    const { id } = req.params;
+scheduleRouter.post('/:id/complete', scheduleController.completeEvent);
 
-    try {
-        await updateSchedule(id, req.user.id, { completed: true });
-        res.json({ message: 'Task marked as complete' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update task status' });
-    }
-});
-
-scheduleRouter.post('/update', validate(calendarUrlSchema), async (req, res) => {
-    try {
-        console.log(req.body);
-        const {calendar_url} = req.body;
-        const user_id = req.user.id;
-        await fetchAndSaveSchedule(calendar_url, user_id);
-        res.status(200).json({ message: 'Schedule updated' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update schedule' });
-    }
-});
+scheduleRouter.post('/update', validate(calendarUrlSchema), scheduleController.obtainingSchedule);
 
 export default scheduleRouter;

@@ -22,45 +22,45 @@ export default function PetPage() {
 
   const handleSubmit = async () => {
 
-  const schema = calendarUrlSchema;
-  const result = schema.safeParse(state);
+    const result = calendarUrlSchema.safeParse(state);
 
-  if (!result.success) {
-      const fieldErrors = {};
+    if (!result.success) {
+        const fieldErrors = {};
 
-      result.error.issues.forEach((issue) => {
-      fieldErrors[issue.path[0]] = issue.message;
-      })
+        result.error.issues.forEach((issue) => {
+        fieldErrors[issue.path[0]] = issue.message;
+        })
 
-      setErrors(fieldErrors);
-      return;
-  }
-  
-  setErrors({});
-
-  try {
-    const {calendar_url} = result.data;
+        setErrors(fieldErrors);
+        return;
+    }
     
-    await api.post('/schedule/update', {calendar_url});
-    
-    handleCloseModal();
+    setErrors({});
 
-    setIsSchedule(true);
-    
-  } catch (err) {
-      console.error(err);
-      setErrors({
-          server: err.response?.data?.message || "Server error"
+    try {
+      const {calendar_url} = result.data;
+      
+      await api.post('/schedule/update', {calendar_url});
+
+      const updatedSchedule = await api.get('/schedule');
+
+      setSchedule(updatedSchedule.data);
+
+      handleCloseModal();
+
+      setIsSchedule(true);
+      
+    } catch (err) {
+        console.error(err);
+        setErrors({
+            server: err.response?.data?.message || "Server error"
       });
     }
   }
 
-  const {schedule} = useSchedule();
-  const [isSchedule, setIsSchedule] = useState(false);
-
-  useEffect(() => {
-    setIsSchedule(schedule.length != 0);
-  }, [schedule]);
+  const {schedule, setSchedule} = useSchedule();
+  
+  const isSchedule = schedule.length > 0;
 
   const {pet} = usePet();
 
