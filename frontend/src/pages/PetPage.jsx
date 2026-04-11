@@ -3,7 +3,7 @@ import PetActions from "../components/pet/PetActions";
 import SidebarButtons from "../components/sidebar/SidebarButtons";
 import Modal from "../components/modal/Modal";
 import { usePet } from "../context/PetSocketContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DailySchedule from "../components/schedule/DailySchedule/DailySchedule";
 import '../components/pet/Pet.css';
 import PetAvatar from "../components/pet/PetAvatar";
@@ -11,6 +11,7 @@ import ScheduleForm from "../components/forms/ScheduleForm";
 import { calendarUrlSchema } from "../schemas/schedule.schemas";
 import api from "../api/api";
 import useSchedule from "../hooks/useSchedule";
+import ProfilePage from "./ProfilePage";
 
 export default function PetPage() {
 
@@ -94,7 +95,7 @@ export default function PetPage() {
 
       {openModal && (
         <Modal onClose={handleCloseModal}>
-          {openModal === "profile" && <div>Профиль</div>}
+          {openModal === "profile" && <ProfilePage />}
           {openModal === "achievements" && <div>Достижения</div>}
           {openModal === "leaderboard" && <div>Leaderboard</div>}
           {openModal === "schedule" && 

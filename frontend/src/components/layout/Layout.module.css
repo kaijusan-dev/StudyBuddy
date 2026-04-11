@@ -1,11 +1,11 @@
 .Layout {
   min-height: 100vh;
   display: grid;
-  grid-template-rows: 50px 1fr;
+  grid-template-rows: 60px 1fr;
 }
 
 .Content {
-  flex: 1;
+  min-height: 0;
   background-image: url('/background.png');
   background-size: cover;
   background-repeat: no-repeat;

@@ -35,7 +35,9 @@
 /* ссылки */
 .Links {
   display: flex;
+  align-items: center; 
   gap: 24px;
+  height: 100%;
 }
 
 .Links a {
@@ -49,4 +51,12 @@
 
 .Links a:hover {
   color: #6366f1;
+}
+
+.icon {
+  height: 34px;
+}
+
+.icon:hover {
+  transform: scale(1.05);
 }

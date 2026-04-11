@@ -15,7 +15,7 @@ export default function useSchedule() {
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
-    }, [schedule]);
+    }, []);
 
     return { schedule, setSchedule, loading };
 } 
