@@ -1,50 +1,38 @@
 .pet-avatar {
-  font-size: 80px;
-  transition: transform 0.3s ease;
-  object-fit: contain;
-  max-width: 100%;
-  max-height: 100%;
+  width: 560px;
+  height: 560px;
+  background-repeat: no-repeat;
 }
 
-/* Idle — лёгкое дыхание */
-.pet-avatar.idle {
-  animation: idle-bounce 2s infinite;
+.idle {
+  background-image: url("/pet/idle.png");
+  background-size: calc(560px * 12) 560px;
+  animation: idle 2.5s steps(12) infinite;
 }
 
-@keyframes idle-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+.happy {
+  background-image: url("/pet/happy.png");
+  background-size: calc(560px * 18) 560px;
+  animation: happy 2.5s steps(18) infinite;
 }
 
-/* Happy — прыгает */
-.pet-avatar.happy {
-  animation: happy-jump 0.6s infinite;
+.angry {
+  background-image: url("/pet/angry.png");
+  background-size: calc(560px * 8) 560px;
+  animation: angry 2.5s steps(8) infinite;
 }
 
-@keyframes happy-jump {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+@keyframes idle {
+  from { background-position: 0 0; }
+  to { background-position: -6720px 0; } /* 560 * 12 */
 }
 
-/* Sleep — плавное покачивание */
-.pet-avatar.sleep {
-  animation: sleep 3s infinite;
-  opacity: 0.7;
+@keyframes happy {
+  from { background-position: 0 0; }
+  to { background-position: -10080px 0; } /* 560 * 18 */
 }
 
-@keyframes sleep {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(5deg); }
-}
-
-/* Angry — тряска */
-.pet-avatar.angry {
-  animation: shake 0.3s infinite;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-  100% { transform: translateX(0); }
+@keyframes angry {
+  from { background-position: 0 0; }
+  to { background-position: -4480px 0; } /* 560 * 8 */
 }

@@ -47,6 +47,16 @@ export const createPetSocket = (server) => {
 
       ws.on("message", async (message) => {
         const data = JSON.parse(message);
+
+        if (data.action === "pet_state") {
+          const pet = await petService.getPet(userId);
+          ws.send(JSON.stringify({
+            type: "pet_state",
+            pet: pet,
+            animation: "idle"
+          }));
+        }
+
         if (data.action === "feed") {
           const updatedPet = await petService.feedPet(userId);
           ws.send(JSON.stringify({
@@ -57,7 +67,20 @@ export const createPetSocket = (server) => {
         }
       });
 
-      ws.on("close", () => console.log("Pet socket disconnected:", userId));
+      const interval = setInterval(async () => {
+        const pet = await petService.getPet(userId);
+
+        ws.send(JSON.stringify({
+          type: "pet_state",
+          pet,
+          animation: "idle"
+        }));
+      }, 1000);
+
+      ws.on("close", () => {
+        clearInterval(interval);
+        console.log("Pet socket disconnected:", userId)
+      });
 
     } catch (err) {
       console.error("socket error", err);

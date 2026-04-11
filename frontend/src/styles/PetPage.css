@@ -4,7 +4,7 @@
     "status status status"
     "left main right"
     "actions actions actions";
-  grid-template-columns: 200px auto 300px; 
+  grid-template-columns: 2fr 7fr 2fr; 
   grid-template-rows: auto 1fr auto;
   height: 100%;
   gap: 10px;
