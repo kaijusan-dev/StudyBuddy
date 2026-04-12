@@ -57,7 +57,7 @@ export function usePetSocket(token) {
             return;
           }
 
-          if (data.type === "pet_state" || data.type === "pet_update") setPet(tickRef.current(data.pet));
+          if (data.type === "pet_state" || data.type === "pet_update") setPet(data.pet);
           
         } catch (err) {
           console.error("WS parse error", err);
@@ -102,6 +102,7 @@ export function usePetSocket(token) {
   }, [token, loading]);
 
   const DECAY_RATE = 0.1;
+  const MAX_DIFF = 5;
 
   const tickRef = useRef(null);
 
@@ -114,7 +115,9 @@ export function usePetSocket(token) {
 
       if (isNaN(lastUpdated)) return pet;
 
-      const diffSec = (now - lastUpdated) / 1000;
+      let diffSec = (now - lastUpdated) / 1000;
+
+      diffSec = Math.min(diffSec, MAX_DIFF);
 
       return {
         ...pet,

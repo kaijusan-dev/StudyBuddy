@@ -11,6 +11,10 @@ export default function PetTab() {
     const change = (field, delta) => {
         const newValue = Math.max(0, Math.min(100, pet[field] + delta));
 
+        if (delta < 0) {
+            pet.fullness = Math.max(0, pet.fullness + delta);
+        }
+
         updateStat(field, newValue);
     };
 
