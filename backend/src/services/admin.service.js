@@ -1,5 +1,6 @@
 import * as adminRepository from '../repositories/admin.repository.js'
 import * as scheduleRepository from '../repositories/schedule.repository.js';
+import * as petRepository from '../repositories/pet.repository.js';
 
 async function getUsers() {
     try {
@@ -46,4 +47,18 @@ async function deleteEvent(id) {
     };
 }
 
-export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent };
+async function updatePet(user_id, field, value) {
+    try {
+        
+        const data = {
+            [field]: value
+        };
+
+        return await petRepository.updatePet(user_id, data);
+    }
+    catch (err) {
+        console.error('Error updating pet: ', err.message);
+    }
+}
+
+export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent, updatePet };

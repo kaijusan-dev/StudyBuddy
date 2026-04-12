@@ -1,6 +1,7 @@
 import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import * as petService from "../services/pet.service.js";
+import * as adminService from "../services/admin.service.js";
 
 export const createPetSocket = (server) => {
 
@@ -42,43 +43,37 @@ export const createPetSocket = (server) => {
       const userId = decoded.id;
       console.log("Pet socket connected:", userId);
 
-      const pet = await petService.getPet(userId);
+      let pet = await petService.getPet(userId);
       ws.send(JSON.stringify({ type: "pet_state", pet }));
 
       ws.on("message", async (message) => {
         const data = JSON.parse(message);
-
-        if (data.action === "pet_state") {
-          const pet = await petService.getPet(userId);
-          ws.send(JSON.stringify({
-            type: "pet_state",
-            pet: pet,
-            animation: "idle"
-          }));
-        }
 
         if (data.action === "feed") {
           const updatedPet = await petService.feedPet(userId);
           ws.send(JSON.stringify({
             type: "pet_update",
             pet: updatedPet,
-            animation: "eat"
+            animation: "eat",
+          }));
+        }
+
+        if (data.action === "update" && decoded.role === 'admin') {
+
+          const updatedPet = await adminService.updatePet(userId, data.field, data.value);
+          
+          pet = updatedPet;
+
+          ws.send(JSON.stringify({
+            type: "pet_update",
+            pet: updatedPet,
+            animation: "idle",
           }));
         }
       });
 
-      const interval = setInterval(async () => {
-        const pet = await petService.getPet(userId);
-
-        ws.send(JSON.stringify({
-          type: "pet_state",
-          pet,
-          animation: "idle"
-        }));
-      }, 1000);
-
       ws.on("close", () => {
-        clearInterval(interval);
+
         console.log("Pet socket disconnected:", userId)
       });
 

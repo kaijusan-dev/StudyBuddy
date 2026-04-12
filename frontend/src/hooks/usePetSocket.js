@@ -57,7 +57,7 @@ export function usePetSocket(token) {
             return;
           }
 
-          if (data.type === "pet_state" || data.type === "pet_update") setPet(data.pet);
+          if (data.type === "pet_state" || data.type === "pet_update") setPet(tickRef.current(data.pet));
           
         } catch (err) {
           console.error("WS parse error", err);
@@ -101,6 +101,37 @@ export function usePetSocket(token) {
     };
   }, [token, loading]);
 
+  const DECAY_RATE = 0.1;
+
+  const tickRef = useRef(null);
+
+  if (!tickRef.current) {
+    tickRef.current = (pet) => {
+      if (!pet) return pet;
+
+      const now = Date.now();
+      const lastUpdated = new Date(pet.last_updated).getTime();
+
+      if (isNaN(lastUpdated)) return pet;
+
+      const diffSec = (now - lastUpdated) / 1000;
+
+      return {
+        ...pet,
+        fullness: Math.max(0, Math.min(100, pet.fullness - diffSec * DECAY_RATE)),
+        last_updated: now
+      };
+    };
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPet(prev => prev ? tickRef.current(prev) : prev);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const sendAction = (action) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({ action }));
@@ -109,9 +140,19 @@ export function usePetSocket(token) {
     }
   };
 
+  const updateStat = (field, value) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ action: "update", field, value }));
+    } else {
+      console.warn("WS not ready");
+    }
+  };
+
   return {
+    socketRef,
     pet,
     setPet,
+    updateStat,
     feedPet: () => sendAction("feed"),
   };
 }
