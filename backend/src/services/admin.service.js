@@ -47,18 +47,4 @@ async function deleteEvent(id) {
     };
 }
 
-async function updatePet(user_id, field, value) {
-    try {
-        
-        const data = {
-            [field]: value
-        };
-
-        return await petRepository.updatePet(user_id, data);
-    }
-    catch (err) {
-        console.error('Error updating pet: ', err.message);
-    }
-}
-
-export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent, updatePet };
+export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent };

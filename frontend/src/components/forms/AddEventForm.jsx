@@ -8,14 +8,15 @@ export default function AddEventForm({
   handleCloseModal,
   errors
 }) {
+
   return (
     <div className="ScheduleForm">
-      <h1>Добавление события</h1>
+      <h4>Добавление события</h4>
 
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSubmit('addEvent');
-        handleCloseModal();
+        if (Object.keys(errors).length === 0) handleCloseModal();
       }}>
 
         {errors.server && <Error message={errors.server} />}
@@ -40,14 +41,6 @@ export default function AddEventForm({
           name="end_time"
           label="Конец"
           type="datetime-local"
-          state={state}
-          setState={setState}
-        />
-
-        <Input
-          name="user_id"
-          label="ID пользователя"
-          type="number"
           state={state}
           setState={setState}
         />

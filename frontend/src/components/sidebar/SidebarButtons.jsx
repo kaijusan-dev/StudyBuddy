@@ -1,5 +1,5 @@
 import { useAuth } from "../../context/AuthContext";
-import useSchedule from "../../hooks/useSchedule";
+import { useSchedule } from "../../context/ScheduleContext";
 import styles from './SidebarButtons.module.css';
 
 export default function SidebarButtons({ onClick }) {

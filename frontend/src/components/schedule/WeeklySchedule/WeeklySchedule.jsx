@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import useSchedule from '../../../hooks/useSchedule';
 import { getWeekRange, formatDate, formatTime } from '../schedule.utils';
 import styles from './WeeklySchedule.module.css';
+import { useSchedule } from '../../../context/ScheduleContext';
 
 export default function WeeklySchedule() {
     const { schedule, loading } = useSchedule();

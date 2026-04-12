@@ -10,8 +10,8 @@ import PetAvatar from "../components/pet/PetAvatar";
 import ScheduleForm from "../components/forms/ScheduleForm";
 import { calendarUrlSchema } from "../schemas/schedule.schemas";
 import api from "../api/api";
-import useSchedule from "../hooks/useSchedule";
 import ProfilePage from "./ProfilePage";
+import { useSchedule } from "../context/ScheduleContext";
 
 export default function PetPage() {
 

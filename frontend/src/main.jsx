@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { PetSocketProvider } from './context/PetSocketContext.jsx'
 import { AdminProvider } from "./context/AdminContext.jsx";
 import { BrowserRouter } from 'react-router-dom'
+import { ScheduleProvider } from './context/ScheduleContext.jsx';
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -11,9 +12,11 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <AdminProvider>
-          <PetSocketProvider>
-            <App />
-          </PetSocketProvider>
+          <ScheduleProvider>
+            <PetSocketProvider>
+              <App />
+            </PetSocketProvider>
+          </ScheduleProvider>
         </AdminProvider>
       </AuthProvider>
     </BrowserRouter>

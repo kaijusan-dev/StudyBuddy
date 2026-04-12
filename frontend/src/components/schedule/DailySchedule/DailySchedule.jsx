@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import useSchedule from '../../../hooks/useSchedule';
 import { isSameDay, formatTime } from '../schedule.utils';
 import styles from './DailySchedule.module.css';
 import api from '../../../api/api';
+import { useSchedule } from '../../../context/ScheduleContext';
 
 export default function DailySchedule({handleOpenModal}) {
     const { schedule, setSchedule, loading } = useSchedule();
@@ -15,21 +15,18 @@ export default function DailySchedule({handleOpenModal}) {
 
     if(!schedule) return null;
 
-    const today = new Date();
-    today.setHours(0,0,0,0);
-
     const [now, setNow] = useState(new Date());
 
     useEffect(() => {
         const interval = setInterval(() => {
             setNow(new Date());
-        }, 60000);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, []);
 
-    const todayEvents = schedule.filter(event =>
-        isSameDay(new Date(event.start_time), today)
+    const todayEvents = schedule.filter(e =>
+        isSameDay(e.start_time, new Date())
     );
 
     const completeEvent = async (id) => {

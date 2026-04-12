@@ -101,40 +101,6 @@ export function usePetSocket(token) {
     };
   }, [token, loading]);
 
-  const DECAY_RATE = 0.1;
-  const MAX_DIFF = 5;
-
-  const tickRef = useRef(null);
-
-  if (!tickRef.current) {
-    tickRef.current = (pet) => {
-      if (!pet) return pet;
-
-      const now = Date.now();
-      const lastUpdated = new Date(pet.last_updated).getTime();
-
-      if (isNaN(lastUpdated)) return pet;
-
-      let diffSec = (now - lastUpdated) / 1000;
-
-      diffSec = Math.min(diffSec, MAX_DIFF);
-
-      return {
-        ...pet,
-        fullness: Math.max(0, Math.min(100, pet.fullness - diffSec * DECAY_RATE)),
-        last_updated: now
-      };
-    };
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPet(prev => prev ? tickRef.current(prev) : prev);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const sendAction = (action) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({ action }));

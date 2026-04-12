@@ -1,83 +1,98 @@
 import { useState } from "react";
-import useSchedule from "../../../hooks/useSchedule";
-import api from "../../../api/api";
 import AddEventForm from "../../forms/AddEventForm";
-import { formatTime } from "../../schedule/schedule.utils";
+import { formatTime, formatForInput, isSameDay } from "../../schedule/schedule.utils";
+import { useAuth } from "../../../context/AuthContext";
+import { useSchedule } from "../../../context/ScheduleContext";
 
 export default function ScheduleTab() {
-  const { schedule, setSchedule } = useSchedule();
+  const { schedule, createEvent, deleteEvent, deleteAllToday } = useSchedule();
+  const {user} = useAuth();
 
   const [state, setState] = useState({
     summary: "",
-    start_time: "",
-    end_time: "",
-    user_id: "",
+    start_time: formatForInput(new Date()),
+    end_time: formatForInput(new Date(new Date().getTime() + 60 * 60 * 1000)),
+    user_id: user?.id || null,
   });
 
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
 
   // Сегодняшние события для удаления
-  const today = new Date().toISOString().split("T")[0];
-  const todayEvents = schedule.filter(e => e.start_time.startsWith(today));
-  
-  const handleSubmit = async (type) => {
-    if (type === "addEvent") {
-      if (!state.start_time.startsWith(today)) {
-        setErrors({ server: "Можно добавлять только события на сегодня!" });
-        return;
-      }
 
-      try {
-        const payload = {
-          ...state,
-          start_time: new Date(state.start_time).toISOString(),
-          end_time: new Date(state.end_time).toISOString(),
-        };
+  const todayEvents = schedule.filter(e => isSameDay(new Date(e.start_time), new Date()));
 
-        const res = await api.post(`/admin/schedule`, payload);
+  const handleSubmit = async () => {
+    if (
+      !state.start_time ||
+      !state.end_time ||
+      !isSameDay(new Date(state.start_time), new Date()) ||
+      !isSameDay(new Date(state.end_time), new Date())
+    ) {
+      setErrors({ server: "Можно добавлять только события на сегодня!" });
+      return;
+    }
 
-        if (res.data?.event) {
-          setSchedule(prev => [...prev, res.data.event]);
-        }
+    try {
+      const payload = {
+        ...state,
+        start_time: new Date(state.start_time).toISOString(),
+        end_time: new Date(state.end_time).toISOString(),
+        user_id: user?.id,
+      };
 
-        setState({
-          summary: "",
-          start_time: today + "T09:00",
-          end_time: today + "T10:00",
-          user_id: "",
-        });
-        setErrors({});
-        setShowModal(false);
-      } catch (err) {
-        console.error(err);
-        setErrors({ server: "Ошибка при добавлении события" });
-      }
+      await createEvent(payload);
+
+      const now = new Date();
+      const start = new Date(now);
+      const end = new Date(now.getTime() + 60 * 60 * 1000);
+
+      setState({
+        summary: "",
+      start_time: new Date(start).toISOString(),
+      end_time: new Date(end).toISOString(),
+      });
+
+      setErrors({});
+
+    } catch (err) {
+      console.error(err);
+      setErrors({ server: "Ошибка при добавлении события" });
     }
   };
 
-  const deleteEvent = async (id) => {
-    try {
-      await api.delete(`/admin/schedule/${id}`);
-      setSchedule(prev => prev.filter(e => e.id !== id));
-    } catch (err) {
-      console.error("Ошибка при удалении события", err);
-    }
-  };
+  const createQuickEvent = async () => {
+    const now = new Date();
 
-  const deleteAllToday = async () => {
+    const start = new Date(now);
+    const end = new Date(now.getTime() + 60 * 60 * 1000); // +1 час
+
+    const payload = {
+      summary: "Test Event",
+      start_time: new Date(start).toISOString(),
+      end_time: new Date(end).toISOString(),
+      user_id: user?.id,
+    };
+
     try {
-      await Promise.all(todayEvents.map(e => api.delete(`/admin/schedule/${e.id}`)));
-      setSchedule(prev => prev.filter(e => !e.start_time.startsWith(today)));
+      await createEvent(payload);
     } catch (err) {
-      console.error("Ошибка при удалении всех событий", err);
+      console.error(err);
     }
   };
 
   return (
     <div>
       <h3>Управление событиями на сегодня</h3>
-      <button onClick={() => setShowModal(true)}>Добавить событие</button>
+
+      <button onClick={() => setShowModal(prev => !prev)}>
+        Добавить событие
+      </button>
+
+      <button onClick={createQuickEvent}>
+        Быстрое событие
+      </button>
+
       {todayEvents.length > 0 && (
         <button onClick={deleteAllToday}>
           Удалить все события сегодня

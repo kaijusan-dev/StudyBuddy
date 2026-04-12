@@ -1,7 +1,6 @@
 import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import * as petService from "../services/pet.service.js";
-import * as adminService from "../services/admin.service.js";
 
 export const createPetSocket = (server) => {
 
@@ -43,10 +42,32 @@ export const createPetSocket = (server) => {
       const userId = decoded.id;
       console.log("Pet socket connected:", userId);
 
-      let pet = await petService.getPet(userId);
+      // логика тиков сервера для обновления состояния питомца
+      let intervalTick = null;
+      let isTicking = false;
+
+      intervalTick = setInterval(async () => {
+        if (isTicking) return;
+        isTicking = true;
+
+        try {
+          const pet = await petService.syncPet(userId);
+
+          ws.send(JSON.stringify({
+            type: "pet_state",
+            pet,
+          }));
+        } finally {
+          isTicking = false;
+        }
+      }, 1000);
+
+      const pet = await petService.getPet(userId);
+
       ws.send(JSON.stringify({ type: "pet_state", pet }));
 
       ws.on("message", async (message) => {
+
         const data = JSON.parse(message);
 
         if (data.action === "feed") {
@@ -60,9 +81,7 @@ export const createPetSocket = (server) => {
 
         if (data.action === "update" && decoded.role === 'admin') {
 
-          const updatedPet = await adminService.updatePet(userId, data.field, data.value);
-          
-          pet = updatedPet;
+          const updatedPet = await petService.updatePet(userId, data.field, data.value);
 
           ws.send(JSON.stringify({
             type: "pet_update",
@@ -73,7 +92,7 @@ export const createPetSocket = (server) => {
       });
 
       ws.on("close", () => {
-
+        clearInterval(intervalTick);
         console.log("Pet socket disconnected:", userId)
       });
 

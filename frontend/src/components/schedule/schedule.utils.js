@@ -5,14 +5,19 @@ export const formatTime = (dateString) => {
   });
 };
 
+export const formatForInput = (date) =>
+  new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+
 export const isSameDay = (d1, d2) => {
-  const date1 = new Date(d1);
-  const date2 = new Date(d2);
+  const a = new Date(d1);
+  const b = new Date(d2);
 
   return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
+    a.getUTCFullYear() === b.getUTCFullYear() &&
+    a.getUTCMonth() === b.getUTCMonth() &&
+    a.getUTCDate() === b.getUTCDate()
   );
 };
 
