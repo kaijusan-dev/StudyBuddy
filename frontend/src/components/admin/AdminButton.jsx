@@ -5,7 +5,15 @@ import { useAdmin } from "../../context/AdminContext";
 export default function AdminButton() {
   const { toggleAdmin } = useAdmin();
 
-  const [pos, setPos] = useState({ x: 100, y: 100 });
+  const [pos, setPos] = useState(() => {
+    const saved = localStorage.getItem("admin_button_pos");
+    return saved ? JSON.parse(saved) : { x: 400, y: 100 };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("admin_button_pos", JSON.stringify(pos));
+  }, [pos]);
+
   const [clicked, setClicked] = useState(false);
 
   const draggingRef = useRef(false);
