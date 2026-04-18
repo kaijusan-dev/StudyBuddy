@@ -45,6 +45,7 @@ async function initializeUsersTable() {
           username TEXT UNIQUE NOT NULL,
           email TEXT UNIQUE NOT NULL,
           group_id INTEGER NOT NULL,
+          tg_id INTEGER UNIQUE NOT NULL,
           avatar TEXT,
           password TEXT NOT NULL,
           calendar_url TEXT,

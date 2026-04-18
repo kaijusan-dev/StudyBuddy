@@ -2,7 +2,7 @@ import express from 'express'
 import { validate } from '#app';
 import { emailSettingsSchema, generalSettingsSchema, passwordSettingsSchema } from './profile.schemas.js';
 import { findUserById } from '#auth';
-import { updateProfileController } from './profile.controller.js';
+import * as profileController from './profile.controller.js';
 import multer from "multer";
 import path from "path";
 import { updateAvatarController } from '#infra';
@@ -49,7 +49,8 @@ const upload = multer({
 });
 
 profileRouter.post('/avatar', upload.single("avatar"), updateAvatarController);
+profileRouter.post('/telegram', profileController.updateTelegramId);
 
-profileRouter.patch('/general', validate(generalSettingsSchema), updateProfileController);
-profileRouter.patch('/email', validate(emailSettingsSchema), updateProfileController);
-profileRouter.patch('/password', validate(passwordSettingsSchema), updateProfileController);
+profileRouter.patch('/general', validate(generalSettingsSchema), profileController.updateProfile);
+profileRouter.patch('/email', validate(emailSettingsSchema), profileController.updateProfile);
+profileRouter.patch('/password', validate(passwordSettingsSchema), profileController.updateProfile);

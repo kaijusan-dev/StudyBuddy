@@ -17,6 +17,7 @@ export default function PetPage() {
 
   const [state, setState] = useState({
     calendar_url: '', 
+    tg_id: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -39,9 +40,11 @@ export default function PetPage() {
     setErrors({});
 
     try {
-      const {calendar_url} = result.data;
+      const {calendar_url, tg_id} = result.data;
       
       await api.post('/schedule/update', {calendar_url});
+
+      await api.post('/profile/telegram', {tg_id});
 
       const updatedSchedule = await api.get('/schedule');
 
