@@ -8,6 +8,7 @@ from config import SCHEDULE_DATA_FILE
 # Хранилище расписаний пользователей {telegram_id: [{"time": "10:30", "name": "Math", ...}]}
 _schedules: Dict[int, List[dict]] = {}
 _scheduler_task: Optional[asyncio.Task] = None
+_daily_task: Optional[asyncio.Task] = None   # новая задача для утренней рассылки
 
 def load_schedules():
     """Загружает расписания из файла"""
@@ -79,7 +80,7 @@ def toggle_lesson(telegram_id: int, index: int) -> bool:
     return False
 
 async def check_schedules(bot):
-    """Проверяет расписания и отправляет уведомления"""
+    """Проверяет расписания и отправляет уведомления за 15 минут до пары"""
     now = datetime.now()
     current_time = now.strftime("%H:%M")
     current_date = now.date()
@@ -102,7 +103,6 @@ async def check_schedules(bot):
             if current_time == reminder_time and notification_key not in check_schedules.sent_notifications:
                 check_schedules.sent_notifications[notification_key] = True
                 
-                # Русское сообщение с эмодзи
                 message = (
                     f"🔔 Напоминание о паре!\n\n"
                     f"📚 {lesson_name}\n"
@@ -120,20 +120,54 @@ async def check_schedules(bot):
             if len(check_schedules.sent_notifications) > 100:
                 check_schedules.sent_notifications.clear()
 
+async def send_daily_schedule(bot):
+    """Отправляет пользователям расписание на сегодня в 7:00 утра"""
+    while True:
+        now = datetime.now()
+        target = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        if now >= target:
+            target += timedelta(days=1)
+        wait_seconds = (target - now).total_seconds()
+        await asyncio.sleep(wait_seconds)
+        
+        today = datetime.now().date()
+        for telegram_id, lessons in _schedules.items():
+            # Здесь можно фильтровать по дню недели, если добавить поле day
+            # Пока выводим все пары (без привязки к дате)
+            if not lessons:
+                message = "🌅 Доброе утро! Сегодня у тебя нет пар. Отдохни и покорми питомца игрой!"
+            else:
+                lessons_text = "\n".join(
+                    f"⏰ {l['time']} – {l['name']}" + (f" ({l['place']})" if l.get('place') else "")
+                    for l in lessons
+                )
+                message = f"🌅 Доброе утро! Твои пары на сегодня:\n\n{lessons_text}\n\n🐾 Не забывай кормить питомца посещением пар!"
+            
+            try:
+                await bot.send_message(telegram_id, message)
+            except Exception as e:
+                print(f"Ошибка отправки утреннего расписания {telegram_id}: {e}")
+        
+        # Небольшая пауза, чтобы не отправить повторно
+        await asyncio.sleep(60)
+
 async def start_scheduler(app):
-    """Запускает фоновую задачу для проверки расписаний"""
-    global _scheduler_task
+    """Запускает фоновые задачи: проверка расписаний и утренняя рассылка"""
+    global _scheduler_task, _daily_task
     
     async def scheduler_loop():
         while True:
             await check_schedules(app.bot)
-            await asyncio.sleep(60)  # проверяем каждую минуту
+            await asyncio.sleep(60)
     
     _scheduler_task = asyncio.create_task(scheduler_loop())
-    print("✅ Планировщик уведомлений запущен")
+    _daily_task = asyncio.create_task(send_daily_schedule(app.bot))
+    print("✅ Планировщик уведомлений и утренней рассылки запущен")
 
 def stop_scheduler():
     """Останавливает планировщик"""
-    global _scheduler_task
+    global _scheduler_task, _daily_task
     if _scheduler_task:
         _scheduler_task.cancel()
+    if _daily_task:
+        _daily_task.cancel()
