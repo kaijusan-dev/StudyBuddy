@@ -12,7 +12,6 @@
   min-height: 0;
 }
 
-/* Статус питомца сверху */
 .pet-status { 
   grid-area: status;
   display: flex;
@@ -24,16 +23,14 @@
   min-height: 60px;
 }
 
-/* Левая панель */
 .left-panel { 
   grid-area: left;
   overflow-y: auto;
   padding: 10px;
-  justify-self: center; /* центр по горизонтали */
+  justify-self: center; 
   width: 100%;
 }
 
-/* Центр: питомец */
 .pet-area {
   grid-area: main;
   display: flex;
@@ -45,17 +42,16 @@
   min-height: 300px;
   max-width: 100%;
 
-  background-image: url('/pet-area-background.png');
-  background-size: contain;       /* вместо cover */
+  background-image: url('/assets/pet-area-background.png');
+  background-size: contain;     
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: local;
   image-rendering: pixelated;
 
-  border-radius: 16px; /* опционально */
+  border-radius: 16px; 
 }
 
-/* Правая панель */
 .right-panel {
   grid-area: right;
   overflow-y: auto;
@@ -64,7 +60,6 @@
   width: 100%;
 }
 
-/* Нижние кнопки */
 .pet-actions { 
   grid-area: actions; 
   display: flex; 
@@ -72,20 +67,6 @@
   gap: 10px; 
   padding: 10px;
   border-radius: 12px;
-}
-
-.pet-actions button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.pet-actions button:hover {
-  background: #43a047;
 }
 
 /* Адаптив */

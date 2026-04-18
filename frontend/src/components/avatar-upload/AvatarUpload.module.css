@@ -2,6 +2,11 @@
   position: relative;
   display: inline-block;
   cursor: pointer;
+
+}
+
+.wrapper:hover {
+  transform: scale(1.05);
 }
 
 .overlay {

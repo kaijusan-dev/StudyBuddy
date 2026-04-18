@@ -64,4 +64,49 @@ async function getScheduleFromDB(user_id) {
     return result;
 }
 
-export { getScheduleFromDB, fetchAndSaveSchedule };
+const createEvent = async (data) => {
+  const { start_time, end_time, summary } = data;
+
+  if (!start_time || !end_time || !summary) {
+    throw new Error("Missing required fields");
+  }
+
+  if (new Date(start_time) >= new Date(end_time)) {
+    throw new Error("Start time must be before end time");
+  }
+
+  return await scheduleRepository.addEventToSchedule({
+    ...data
+  });
+};
+
+const updateEvent = async (id, userId, data) => {
+  if (!id) {
+    throw new Error("Event id is required");
+  }
+
+  if (data.start_time && data.end_time) {
+    if (new Date(data.start_time) >= new Date(data.end_time)) {
+      throw new Error("Start time must be before end time");
+    }
+  }
+
+  return await scheduleRepository.updateSchedule(id, userId, data);
+};
+
+const deleteEvent = async (id, userId) => {
+  if (!id) {
+    throw new Error("Event id is required");
+  }
+
+  const deleted = await scheduleRepository.deleteEventFromSchedule(id);
+
+  if (!deleted) {
+    throw new Error("Event not found");
+  }
+
+  return deleted;
+};
+
+
+export { getScheduleFromDB, fetchAndSaveSchedule, createEvent, updateEvent, deleteEvent };

@@ -61,37 +61,44 @@ export default function DailySchedule({handleOpenModal}) {
     if (loading) return <p>Загрузка...</p>;
 
     return (
-        <div className={styles.container}>
-            <h3>Сегодня</h3>
+        <div className={styles.window}>
 
-            {todayEvents.length === 0 ? (
-                <p>Нет пар 🎉</p>
-            ) : (
-                todayEvents.map(event => (
+            <h3 className={styles.title}>Сегодня</h3>       
+
+            <div className={styles.content}>
+    
+                {todayEvents.length === 0 ? (
+                    <p className={styles.empty}>Нет пар 🎉</p>
+                ) : (
+                    todayEvents.map(event => (
                     <div
                         key={event.id}
                         className={`
-                            ${styles.event}
-                            ${event.completed ? styles.completed : ''}
-                            ${isActive(event) ? styles.active : ''}
+                        ${styles.item}
+                        ${event.completed ? styles.completed : ''}
+                        ${isActive(event) ? styles.active : ''}
                         `}
                     >
-                        <div>
-                            <p>{event.summary}</p>
-                             <span>
-                                {formatTime(event.start_time)} - {formatTime(event.end_time)}
-                             </span>
+                        <div className={styles.info}>
+                        <p>{event.summary}</p>
+                        <span>
+                            {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                        </span>
                         </div>
 
-                        <button
-                            disabled={!isAvailable(event) || event.completed}
-                            onClick={() => completeEvent(event.id)}
-                        >
-                            {event.completed ? '✔' : 'Отметить'}
-                        </button>
+                        {!event.completed &&
+                            <button
+                                className={styles.button}
+                                disabled={!isAvailable(event) || event.completed}
+                                onClick={() => completeEvent(event.id)}
+                            >
+                                Отметить
+                            </button>
+                        }    
                     </div>
-                ))
-            )}
+                    ))
+                )}
+            </div>
         </div>
     );
 }

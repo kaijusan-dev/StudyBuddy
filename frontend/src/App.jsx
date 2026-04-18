@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/protected-route/ProtectedRoute';
 import { routes } from './routesConfig';
-import AdminPanel from './components/admin/AdminPanel';
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
               element={isProtected ? <ProtectedRoute>{element}</ProtectedRoute> : element}
             />
           ))}
-          <Route path="*" element={<h1>Page Not Found</h1>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
   );

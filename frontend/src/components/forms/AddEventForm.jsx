@@ -1,5 +1,6 @@
 import Error from "../error/Error";
 import Input from "../input/Input";
+import styles from './Forms.module.css';
 
 export default function AddEventForm({
   state,
@@ -13,7 +14,7 @@ export default function AddEventForm({
     <div className="ScheduleForm">
       <h4>Добавление события</h4>
 
-      <form onSubmit={(e) => {
+      <form className={styles.form} onSubmit={(e) => {
         e.preventDefault();
         handleSubmit('addEvent');
         if (Object.keys(errors).length === 0) handleCloseModal();

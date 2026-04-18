@@ -4,7 +4,7 @@ export default function Avatar({ type = "large", avatar, onClick }) {
 
   const avatarUrl = avatar
     ? `/api/uploads/avatars/${avatar}`
-    : "/default-avatar.png";
+    : "/assets/default-avatar.png";
 
   return (
     <div 
@@ -16,7 +16,7 @@ export default function Avatar({ type = "large", avatar, onClick }) {
         alt="avatar"
         className={styles.avatarImg}
         onError={(e) => {
-          e.target.src = "/default-avatar.png";
+          e.target.src = "/assets/default-avatar.png";
         }}
       />
     </div>

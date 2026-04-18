@@ -8,7 +8,7 @@ export default function Navbar() {
     return (
         <nav className={styles.Navbar}>
             <Link to={'/'} className={styles.Logo}>
-                <img src="/logo.png" alt="logo" />
+                <img src="/assets/logo.png" alt="logo" />
             </Link>
 
             <div className={styles.Links}>
@@ -22,9 +22,9 @@ export default function Navbar() {
                 
                 {user && 
                     <>
-                        <Link to={'/pet'}><img src="/pet-icon.png" className={styles.icon} /></Link>
+                        <Link to={'/pet'}><img src="/assets/pet-icon.png" className={styles.icon} /></Link>
                         <Link to={'/profile'}><Avatar type='small' avatar={user?.avatar}/></Link>
-                        <Link to={'/'} onClick={logout}><img src="/logout-icon.png" className={styles.icon} /></Link>
+                        <Link to={'/'} onClick={logout}><img src="/assets/logout-icon.png" className={styles.icon} /></Link>
                     </>
                 }
             </div>

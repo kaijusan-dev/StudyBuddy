@@ -107,7 +107,7 @@ const deleteEventFromSchedule = async (id) => {
     `;
 
     const res = await pool.query(query, [
-        id,
+        id
     ]);
 
     return res.rows[0] || null;

@@ -6,8 +6,16 @@
 
 .Content {
   min-height: 0;
-  background-image: url('/background.png');
+
+  background-image: url('/assets/background.png');
   background-size: cover;
   background-repeat: no-repeat;
+
   image-rendering: pixelated;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
 }

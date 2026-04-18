@@ -1,5 +1,5 @@
 import * as adminRepository from './admin.repository.js'
-import * as scheduleRepository from '#schedule';
+import * as scheduleService from '#schedule';
 
 async function getUsers() {
     try {
@@ -28,9 +28,9 @@ async function deleteUser(id) {
     };
 }
 
-async function addEvent(eventData) {
+async function addEvent(event) {
     try {
-        return await scheduleRepository.addEventToSchedule(eventData);
+        return await scheduleService.createEvent(event);
     }
     catch (err) {
         console.error('Error adding event: ', err.message);
@@ -39,7 +39,7 @@ async function addEvent(eventData) {
 
 async function deleteEvent(id) {
     try {
-        return await scheduleRepository.deleteEventFromSchedule(id);
+        return await scheduleService.deleteEvent(id);
     }
     catch (err) {
         console.error('Error deleting event: ', err.message);

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import styles from './Modal.module.css';
 
-export default function Modal({ children, onClose, title }) {
+export default function Modal({ children, onClose }) {
   const [pos, setPos] = useState({ x: window.innerWidth / 2 - 350, y: 100 });
-  const [size, setSize] = useState({ width: 700, height: 600 });
+  const [size, setSize] = useState({ width: 700, height: 800 });
 
   const draggingRef = useRef(false);
   const resizingRef = useRef(null);
@@ -110,7 +110,6 @@ export default function Modal({ children, onClose, title }) {
       >
         {/* Header draggable */}
         <div className={styles.header} onMouseDown={startDrag}>
-          <span>{title}</span>
           <button className={styles.close} onClick={onClose}>✖</button>
         </div>
 

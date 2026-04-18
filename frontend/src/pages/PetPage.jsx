@@ -72,46 +72,54 @@ export default function PetPage() {
    if (!pet) return <div>Loading pet...</div>;
 
   return (
-    <div className="pet-page">
-      <header className="pet-status">
-        {isSchedule && <PetStatus />}
-      </header>
-
-      <div className="left-panel">
-        <SidebarButtons onClick={handleOpenModal}/>
-      </div>
-
-      <div className="pet-area">
-        {isSchedule && <PetAvatar/>}
-      </div>
-
-      <div className="right-panel">
-        <DailySchedule handleOpenModal={handleOpenModal}/>
-      </div>
-
-      <footer className="pet-actions">
-        {isSchedule && <PetActions />}
-      </footer>
-
-      {openModal && (
+    <>
+      {/* Обязательная модалка */}
+      {!isSchedule && (
         <Modal onClose={handleCloseModal}>
-          {openModal === "profile" && <ProfilePage />}
-          {openModal === "achievements" && <div>Достижения</div>}
-          {openModal === "leaderboard" && <div>Leaderboard</div>}
-          {openModal === "schedule" && 
-            <ScheduleForm 
-              state={state} 
-              setState={setState} 
-              errors={errors} 
-              handleSubmit={handleSubmit}
-              handleCloseModal={handleCloseModal}
-            />
-          }
+          <ScheduleForm 
+            state={state} 
+            setState={setState} 
+            errors={errors} 
+            handleSubmit={handleSubmit}
+          />
         </Modal>
-      )}
+       )
+      }
 
-    </div>
+      {isSchedule && 
+        (
+        <div className="pet-page">
+          <header className="pet-status">
+            {isSchedule && <PetStatus />}
+          </header>
 
-    
-  );
+          <div className="left-panel">
+            <SidebarButtons onClick={handleOpenModal}/>
+          </div>
+
+          <div className="pet-area">
+            {isSchedule && <PetAvatar/>}
+          </div>
+
+          <div className="right-panel">
+            <DailySchedule handleOpenModal={handleOpenModal}/>
+          </div>
+
+          <footer className="pet-actions">
+            {isSchedule && <PetActions />}
+          </footer>
+
+          {/* Обычные модалки */}
+          {openModal && (
+            <Modal onClose={handleCloseModal}>
+              {openModal === "profile" && <ProfilePage />}
+              {openModal === "achievements" && <div>Достижения</div>}
+              {openModal === "leaderboard" && <div>Leaderboard</div>}
+            </Modal>
+          )}
+        </div>
+        )
+      }
+    </>
+  )
 }

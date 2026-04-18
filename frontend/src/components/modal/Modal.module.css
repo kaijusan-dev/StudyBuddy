@@ -13,7 +13,7 @@
   max-width: 90vw;
   max-height: 90vh;
 
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 16px;
   overflow: hidden;
 
@@ -24,6 +24,21 @@
   /* чтобы текст не выделялся при ресайзе */
   user-select: none;
   position: absolute;
+}
+
+.title {
+  text-align: center;
+
+  font-family: 'Thin Pixel', monospace;
+
+  font-size: 80px;
+  color: #fcf4ce; 
+
+  text-shadow:
+    3px 3px 0 #5c64c4,   
+    0 0 0 #5c64c4;
+
+  margin: 0;
 }
 
 /* draggable зона */
