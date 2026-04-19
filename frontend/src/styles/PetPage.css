@@ -1,0 +1,92 @@
+.pet-page {
+  display: grid;
+  grid-template-areas:
+    "status status status"
+    "left main right"
+    "actions actions actions";
+  grid-template-columns: 2fr 7fr 2fr; 
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  gap: 10px;
+  padding: 10px;
+  min-height: 0;
+}
+
+.pet-status { 
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  min-height: 60px;
+}
+
+.left-panel { 
+  grid-area: left;
+  overflow-y: auto;
+  padding: 10px;
+  justify-self: center; 
+  width: 100%;
+}
+
+.pet-area {
+  grid-area: main;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+  width: 100%;
+  min-height: 300px;
+  max-width: 100%;
+
+  background-image: url('/assets/pet-area-background.png');
+  background-size: contain;     
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: local;
+  image-rendering: pixelated;
+
+  border-radius: 16px; 
+}
+
+.right-panel {
+  grid-area: right;
+  overflow-y: auto;
+  padding: 10px;
+  justify-self: center;
+  width: 100%;
+}
+
+.pet-actions { 
+  grid-area: actions; 
+  display: flex; 
+  justify-content: center; 
+  gap: 10px; 
+  padding: 10px;
+  border-radius: 12px;
+}
+
+/* Адаптив */
+@media (max-width: 1024px) {
+  .pet-page {
+    grid-template-areas:
+      "status"
+      "main"
+      "actions";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .left-panel, .right-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pet-actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

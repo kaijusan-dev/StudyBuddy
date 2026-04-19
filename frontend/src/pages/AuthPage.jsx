@@ -69,7 +69,7 @@ export default function AuthPage({type}) {
     return (
         <div className="AuthPage">
             {type === 'register' 
-                ? (
+            ?   (
                 <RegisterForm 
                     state={state} 
                     setState={setState} 
@@ -77,15 +77,15 @@ export default function AuthPage({type}) {
                     errors={errors} 
                 />
                 )
-                : (
+            :   ( 
                 <LoginForm 
                     state={state} 
                     setState={setState} 
                     handleSubmit={handleSubmit} 
                     errors={errors} 
                 />
-            )
-            }
+                )
+            } 
         </div>
     )
 }

@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import styles from './Navbar.module.css';
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import Avatar from "../avatar/Avatar";
 
 export default function Navbar() {
-    const {user, logout} = useContext(AuthContext);
+    const {user, logout} = useAuth();
     return (
         <nav className={styles.Navbar}>
             <Link to={'/'} className={styles.Logo}>
-                <img src="/logo.png" alt="logo" />
+                <img src="/assets/logo.png" alt="logo" />
             </Link>
 
             <div className={styles.Links}>
@@ -22,9 +22,9 @@ export default function Navbar() {
                 
                 {user && 
                     <>
-                        <Link to={'/pet'}>Питомец</Link>
-                        <Link to={'/profile'}>Профиль</Link>
-                        <Link to={'/'} onClick={logout}>Выйти</Link>
+                        <Link to={'/pet'}><img src="/assets/pet-icon.png" className={styles.icon} /></Link>
+                        <Link to={'/profile'}><Avatar type='small' avatar={user?.avatar}/></Link>
+                        <Link to={'/'} onClick={logout}><img src="/assets/logout-icon.png" className={styles.icon} /></Link>
                     </>
                 }
             </div>

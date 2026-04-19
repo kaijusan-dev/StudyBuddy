@@ -1,0 +1,100 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* таблица */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* header */
+.header {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 100px 160px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #777;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* строки */
+.row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 100px 160px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.row:hover {
+  background: #f1f1f1;
+}
+
+/* роли */
+.admin {
+  color: #fff;
+  background: #000;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: fit-content;
+}
+
+.user {
+  color: #333;
+  background: #e5e5e5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: fit-content;
+}
+
+/* кнопки */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle:hover {
+  background: #ccc;
+}
+
+.delete {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #ff4d4d;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete:hover {
+  background: #e60000;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

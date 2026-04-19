@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend/uploads:/app/uploads
+      - uploads_data:/app/uploads
 
   db:
     image: postgres:latest
@@ -31,3 +31,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:

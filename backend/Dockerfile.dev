@@ -1,5 +1,5 @@
 # dev
-FROM node:20-bullseye
+FROM node:20
 
 WORKDIR /app
 

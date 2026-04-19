@@ -1,0 +1,80 @@
+.wrapper {
+  height: 100%;
+  min-height: calc(100vh - 60px); /* учитываем navbar */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* пиксельное окно */
+.window {
+  width: 500px;
+
+  background-color: #fcf4ce;
+  border: 4px solid #bcbcfc;
+
+  box-shadow: 8px 8px 0 #5c64c4;
+
+  display: flex;
+  flex-direction: column;
+
+  animation: appear 0.2s ease;
+}
+
+/* верхняя панель */
+.titlebar {
+  background-color: #bcbcfc;
+  padding: 10px;
+
+  font-size: 30px;
+  color: #141414;
+
+  text-align: center;
+}
+
+/* контент */
+.content {
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* заголовок */
+.content h1 {
+  font-size: 50px;
+  color: #141414;
+
+  text-align: center;
+}
+
+/* текст */
+.content p {
+  font-size: 30px;
+  color: #5c64c4;
+
+  text-align: center;
+}
+
+/* кнопки */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+/* анимация появления */
+@keyframes appear {
+  from {
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}

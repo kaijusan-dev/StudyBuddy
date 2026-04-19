@@ -1,13 +1,21 @@
 .Layout {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 60px 1fr;
 }
 
 .Content {
-  flex: 1;
-  background-image: url('/background.png');
+  min-height: 0;
+
+  background-image: url('/assets/background.png');
   background-size: cover;
   background-repeat: no-repeat;
+
   image-rendering: pixelated;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
 }

@@ -1,35 +1,40 @@
 import Input from "../input/Input";
 import Error from "../error/Error";
+import Button from "../buttons/Button";
+import styles from './Forms.module.css';
 
 export default function RegisterForm({state, setState, handleSubmit, errors}) {
     return (
         <div className="RegisterForm">
-            <h1>Регистрация</h1>
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit('register');
-            }}>
+            <div className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <h1 className={styles.title}>Регистрация</h1>
+                </div>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit('register');
+                }} className={styles.form}>
 
-            {errors.server && <Error message={errors.server} />}
+                    {errors.server && <Error message={errors.server} />}
 
-            <Input name = 'username' label= 'Имя' type='text' state={state} setState={setState}/>
-            {errors.username && <Error message={errors.username} />}
+                    <Input name = 'username' label= 'Имя' type='text' state={state} setState={setState}/>
+                    {errors.username && <Error message={errors.username} />}
 
-            <Input name = 'email' label= 'Email' type='text' state={state} setState={setState}/>
-            {errors.email && <Error message={errors.email} />}
+                    <Input name = 'email' label= 'Email' type='text' state={state} setState={setState}/>
+                    {errors.email && <Error message={errors.email} />}
 
-            <Input name = 'group_id' label= 'Номер группы' type='text' state={state} setState={setState}/>
-            {errors.group_id && <Error message={errors.group_id} />}
+                    <Input name = 'group_id' label= 'Номер группы' type='text' state={state} setState={setState}/>
+                    {errors.group_id && <Error message={errors.group_id} />}
 
-            <Input name = 'password' label= 'Пароль' type='password' state={state} setState={setState}/>
-            {errors.password && <Error message={errors.password} />}
+                    <Input name = 'password' label= 'Пароль' type='password' state={state} setState={setState}/>
+                    {errors.password && <Error message={errors.password} />}
 
-            <Input name = 'passwordAgain' label= 'Повторите пароль' type='password' state={state} setState={setState}/>
-            {errors.passwordAgain && <Error message={errors.passwordAgain} />}
+                    <Input name = 'passwordAgain' label= 'Повторите пароль' type='password' state={state} setState={setState}/>
+                    {errors.passwordAgain && <Error message={errors.passwordAgain} />}
 
-            <hr />
-            <button type="submit">Зарегистрироваться</button>
-            </form>
+                    <Button type="submit" variant='register'>Зарегистрироваться</Button>
+                </form> 
+            </div>
         </div>
     )
 }

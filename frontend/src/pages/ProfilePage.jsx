@@ -4,6 +4,7 @@ import SettingsForm from "../components/forms/SettingsForm";
 import { emailSettingsSchema, generalSettingsSchema, passwordSettingsSchema } from "../schemas/profile.schemas";
 import api from "../api/api";
 import AvatarUpload from "../components/avatar-upload/AvatarUpload";
+import '../styles/ProfilePage.css';
 
 export default function ProfilePage() {
 
@@ -84,14 +85,27 @@ export default function ProfilePage() {
 
     return (
         <div className="ProfilePage">
-            <h1 style={{ textAlign: 'center', marginTop: '20px' }}>Страница профиля</h1>
-            <p style={{ textAlign: 'center' }}>не знаю что тут должно показываться, но есть настройки</p>
 
-            {user && <AvatarUpload user={user} onUpload={setUser} />}
+            <div className='profileCard'>
+                {user && <AvatarUpload user={user} onUpload={setUser} />}
 
-            <p>Имя: {user?.username}</p>
-            <p>Почта email: {user?.email}</p>
-            <p>Группа: {user?.group_id}</p>
+                <div className='info'>
+                    <div className='row'>
+                    <span>Имя</span>
+                    <p>{user?.username}</p>
+                    </div>
+
+                    <div className='row'>
+                    <span>Email</span>
+                    <p>{user?.email}</p>
+                    </div>
+
+                    <div className='row'>
+                    <span>Группа</span>
+                    <p>{user?.group_id}</p>
+                    </div>
+                </div>
+            </div>
 
             <SettingsForm 
                 type={'general'}

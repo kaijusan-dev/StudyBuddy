@@ -57,12 +57,8 @@ export function usePetSocket(token) {
             return;
           }
 
-          if (data.type === "pet_state" || data.type === "pet_update") {
-            setPet({
-              ...data.pet,
-              last_updated: new Date(),
-            });
-          }
+          if (data.type === "pet_state" || data.type === "pet_update") setPet(data.pet);
+          
         } catch (err) {
           console.error("WS parse error", err);
         }
@@ -113,9 +109,19 @@ export function usePetSocket(token) {
     }
   };
 
+  const updateStat = (field, value) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ action: "update", field, value }));
+    } else {
+      console.warn("WS not ready");
+    }
+  };
+
   return {
+    socketRef,
     pet,
     setPet,
+    updateStat,
     feedPet: () => sendAction("feed"),
   };
 }

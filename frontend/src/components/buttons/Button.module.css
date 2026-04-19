@@ -1,0 +1,76 @@
+.button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+
+  transition: transform 0.05s linear, color 0.05s linear;
+
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+
+  min-width: 300px;
+  width: auto;
+  height: 87px;
+
+  color: #141414;
+
+  font-size: 50px;
+
+}
+
+.base {
+  background-image: url('/assets/base-button.png');
+}
+
+.enter {
+  background-image: url('/assets/auth-button.png');
+}
+
+.register {
+  background-image: url('/assets/auth-button.png');
+}
+
+.action {
+  background-image: url('/assets/action-button.png');
+}
+
+.sidebar {
+  background-image: url('/assets/base-button.png');
+  color: #90b9ff;
+}
+
+.button span {
+  position: relative;
+  top: -13px;
+  transition: transform 0.05s linear, top 0.05s linear;
+}
+
+.button:hover {
+  transform: scale(1.02);
+}
+
+.button:active {
+  color: #ffffd4;
+  background-image: url('/assets/base-button-active.png');
+  transform: translateY(4px);
+}
+
+.button.enter:active,
+.button.register:active {
+  background-image: url('/assets/auth-button-active.png');
+}
+
+.button.action:active {
+  background-image: url('/assets/action-button-active.png');
+}
+
+.button:active span {
+  top: 0;
+}
