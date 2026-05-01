@@ -1,6 +1,12 @@
 import app from "./app.js";
 import express from 'express';
 import http from 'http';
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import { createPetSocket } from "./ws/pet.socket.js";
 import {
   connectWithRetry,
@@ -9,7 +15,6 @@ import {
   initializeUserRoleEnum,
   initializeUsersTable
 } from "#infra";
-import path from "path";
 
 const server = http.createServer(app);
 createPetSocket(server);
@@ -35,12 +40,12 @@ await startServer();
 // production
 if (process.env.MODE === 'production') {
 
-  const distPath = path.join(__dirname, "../frontend");
+  const distPath = path.resolve("frontend/dist");
 
-  // отдаём статику фронта
+  //отдаем статику фронта
   app.use(express.static(distPath));
 
-  // fallback для SPA (только GET запросы доступны, кроме /api)
+  // принимаются только GET запросы, кроме api
   app.get(/^\/(?!api).*/, (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });

@@ -3,3 +3,4 @@ node_modules/
 uploads/
 .vscode
 .VSCodeCounter
+package-lock.json

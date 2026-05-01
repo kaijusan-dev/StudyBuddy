@@ -54,7 +54,7 @@ export function AuthProvider({children}) {
     useEffect(() => {
         const handleUnauthorized = () => {
         logout();
-        navigate("/login");
+        navigate("/auth/login");
         };
 
         window.addEventListener("unauthorized", handleUnauthorized);

@@ -41,5 +41,9 @@ const updateUser = async (id, data) => {
   return profileRepository.updateUser(id, data);
 };
 
+const updateTelegramId = async (id, data) => {
+  const {tg_id} = data;
+  return profileRepository.updateUser(id, {tg_id});
+};
 
-export { updateProfile, updateUser };
+export { updateProfile, updateUser, updateTelegramId };
