@@ -1,6 +1,54 @@
-import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import * as petService from "#pet";
+import { WebSocketServer, WebSocket } from "ws";
+
+const activePets = new Map(); 
+const clients = new Map();
+
+const applyPetUpdate = (userId, updater) => {
+  const pet = activePets.get(userId);
+  if (!pet) return;
+
+  const updated = updater(pet);
+
+  if (!updated) return;
+
+  activePets.set(userId, updated);
+
+  return updated;
+};
+
+setInterval(() => {
+  for (const [userId, pet] of activePets.entries()) {
+    const updated = applyPetUpdate(userId, (p) => {
+      const next = petService.calculatePetState(p);
+      return {
+        ...next,
+      };
+    }); 
+
+    if (!updated) continue;
+
+    const ws = clients.get(userId);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "pet_state",
+        pet: updated,
+      }));
+    }
+  }
+}, 5000);
+
+setInterval(async () => {
+  await Promise.all(
+    [...activePets.entries()].map(([userId, pet]) =>
+      petService.savePet(userId, {
+        ...pet,
+        last_updated: new Date(),
+      })
+    )
+  );
+}, 30000);
 
 export const createPetSocket = (server) => {
 
@@ -42,58 +90,76 @@ export const createPetSocket = (server) => {
       const userId = decoded.id;
       console.log("Pet socket connected:", userId);
 
-      // логика тиков сервера для обновления состояния питомца
-      let intervalTick = null;
-      let isTicking = false;
-
-      intervalTick = setInterval(async () => {
-        if (isTicking) return;
-        isTicking = true;
-
-        try {
-          const pet = await petService.syncPet(userId);
-
-          ws.send(JSON.stringify({
-            type: "pet_state",
-            pet,
-          }));
-        } finally {
-          isTicking = false;
-        }
-      }, 1000);
-
       const pet = await petService.getPet(userId);
 
-      ws.send(JSON.stringify({ type: "pet_state", pet }));
+      clients.set(userId, ws);
+      activePets.set(userId, pet);
+
+      //initial state
+      ws.send(JSON.stringify({
+        type: "pet_state",
+        pet,
+      }));
 
       ws.on("message", async (message) => {
 
         const data = JSON.parse(message);
 
         if (data.action === "feed") {
-          const updatedPet = await petService.feedPet(userId);
+          const pet = activePets.get(userId);
+
+          const updated = applyPetUpdate(userId, (pet) => {
+            const current = petService.calculatePetState(pet);
+
+            return {
+              ...current,
+              fullness: Math.min(current.fullness + 20, 100),
+              last_updated: new Date(),
+            };
+          });
+          
+          if (!updated) return;
+
           ws.send(JSON.stringify({
             type: "pet_update",
-            pet: updatedPet,
+            pet: updated,
             animation: "eat",
           }));
         }
 
         if (data.action === "update" && decoded.role === 'admin') {
 
-          const updatedPet = await petService.updatePet(userId, data.field, data.value);
+          const pet = activePets.get(userId);
+
+          const updated = applyPetUpdate(userId, (pet) => {
+            return {
+              ...pet,
+              [data.field]: data.value,
+              last_updated: new Date(),
+            };
+          });
+
+          if (!updated) return;
 
           ws.send(JSON.stringify({
             type: "pet_update",
-            pet: updatedPet,
+            pet: updated,
             animation: "idle",
           }));
         }
       });
 
-      ws.on("close", () => {
-        clearInterval(intervalTick);
-        console.log("Pet socket disconnected:", userId)
+      ws.on("close", async () => {
+        const pet = activePets.get(userId);
+
+        if (pet) {
+          await petService.savePet(userId, {
+            ...pet,
+            last_updated: new Date(),
+          });
+          clients.delete(userId);
+          activePets.delete(userId);
+        }
       });
 
     } catch (err) {

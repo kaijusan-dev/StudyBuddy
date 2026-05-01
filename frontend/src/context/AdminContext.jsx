@@ -7,7 +7,7 @@ export function AdminProvider({children}) {
 
     const {user} = useAuth();
 
-    const isAdmin = user?.role === "admin";
+    const isAdmin = user?.role === "admin" || import.meta.env.MODE == 'development';
 
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("users");

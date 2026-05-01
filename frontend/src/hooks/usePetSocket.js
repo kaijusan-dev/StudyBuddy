@@ -57,7 +57,11 @@ export function usePetSocket(token) {
             return;
           }
 
-          if (data.type === "pet_state" || data.type === "pet_update") setPet(data.pet);
+          if (data.type === "pet_state" || data.type === "pet_update") {
+            if (data.pet) {
+              setPet(data.pet);
+            }
+          }
           
         } catch (err) {
           console.error("WS parse error", err);
