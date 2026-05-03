@@ -5,8 +5,8 @@ export default function PetAvatar() {
   const {pet} = usePet();
   
   const getMood = () => {
-    if (pet.fullness < 30) return "angry";
-    if (pet.fullness > 80) return "happy";
+    if (pet.fullness < 10) return "angry";
+    if (pet.fullness > 20) return "happy";
     return "idle";
   };
 
