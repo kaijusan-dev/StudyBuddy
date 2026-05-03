@@ -46,4 +46,4 @@ async function deleteEvent(id) {
     };
 }
 
-export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent };
+export { getUsers, toggleRole, deleteUser, addEvent, deleteEvent }; 

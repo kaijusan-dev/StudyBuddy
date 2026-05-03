@@ -1,4 +1,5 @@
 import * as petRepository from "./pet.repository.js";
+import { findUserById } from "#auth";
 import { PET_BALANCE } from "./pet.balance.js";
 
 export const calculatePetState = (pet) => {
@@ -21,6 +22,12 @@ export const calculatePetState = (pet) => {
 export const getPet = async (userId) => {
   let pet = await petRepository.findPetByUserId(userId);
   if (!pet) {
+
+    const user = await findUserById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     pet = await petRepository.createPet(userId);
   }
 

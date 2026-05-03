@@ -49,7 +49,8 @@ async function initializeUsersTable() {
           avatar TEXT,
           password TEXT NOT NULL,
           calendar_url TEXT,
-          role user_role DEFAULT 'user' NOT NULL
+          role user_role DEFAULT 'user' NOT NULL,
+          achievements JSONB DEFAULT '[]'
       );
   `;
   return await pool.query(createTableQuery);
@@ -75,7 +76,8 @@ async function initializePetsTable() {
           happiness INTEGER DEFAULT 100,
           energy INTEGER DEFAULT 100,
           xp INTEGER DEFAULT 0,
-          last_updated TIMESTAMPTZ DEFAULT NOW()
+          last_updated TIMESTAMPTZ DEFAULT NOW(),
+          feed_count INTEGER DEFAULT 0
       );
   `;
   return await pool.query(createTableQuery);

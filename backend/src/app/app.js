@@ -4,6 +4,7 @@ import {profileRouter} from '#profile';
 import {scheduleRouter} from '#schedule';
 import {authRouter, authMiddleware} from '#auth';
 import {adminRouter, adminMiddleware} from '#admin';
+import { achievementsRouter } from '#achievements';
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -17,6 +18,7 @@ app.use(cors({
 app.use('/api/auth', authRouter);
 app.use('/api/profile', authMiddleware, profileRouter);
 app.use('/api/schedule', authMiddleware, scheduleRouter); 
+app.use('/api/achievements', authMiddleware, achievementsRouter); 
 app.use('/api/admin', authMiddleware, adminMiddleware, adminRouter);
 
 const __filename = fileURLToPath(import.meta.url);

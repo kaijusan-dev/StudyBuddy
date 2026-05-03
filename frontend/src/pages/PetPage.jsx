@@ -12,6 +12,7 @@ import { calendarUrlSchema } from "../schemas/schedule.schemas";
 import api from "../api/api";
 import ProfilePage from "./ProfilePage";
 import { useSchedule } from "../context/ScheduleContext";
+import AchievementsPage from "./AchievementsPage";
 
 export default function PetPage() {
 
@@ -116,7 +117,7 @@ export default function PetPage() {
           {openModal && (
             <Modal onClose={handleCloseModal}>
               {openModal === "profile" && <ProfilePage />}
-              {openModal === "achievements" && <div>Достижения</div>}
+              {openModal === "achievements" && <AchievementsPage />}
               {openModal === "leaderboard" && <div>Leaderboard</div>}
             </Modal>
           )}

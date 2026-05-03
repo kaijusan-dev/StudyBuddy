@@ -62,7 +62,12 @@ export function usePetSocket(token) {
               setPet(data.pet);
             }
           }
-          
+
+          //здесь должна быть логика показа достижения как уведомления
+          // if (data.type === "achievements_unlocked") {
+          //   showModal(data.achievements);
+          // }
+
         } catch (err) {
           console.error("WS parse error", err);
         }

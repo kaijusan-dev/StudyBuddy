@@ -47,4 +47,18 @@ async function loginUser({identifier, password}) {
     return userData;
 }
 
-export { registerUser, loginUser };
+async function createTestUser() {
+  try {
+    const user = await registerUser({
+        username: "test",
+        email: "test@test.com",
+        group_id: 1,
+        password: "123456",
+    });
+
+    console.log("created test user: ", user);
+  } 
+  catch {};
+}
+
+export { registerUser, loginUser, createTestUser };

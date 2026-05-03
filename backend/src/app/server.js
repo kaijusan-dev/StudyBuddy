@@ -16,6 +16,8 @@ import {
   initializeUsersTable
 } from "#infra";
 
+import { createTestUser } from "#auth";
+
 const server = http.createServer(app);
 createPetSocket(server);
 
@@ -30,6 +32,8 @@ async function startServer() {
         await initializePetsTable();
 
         console.log('Tables initialized');
+
+        if(process.env.MODE === 'development') await createTestUser();
 
     } catch (err) {
         console.error('Error starting server:', err);

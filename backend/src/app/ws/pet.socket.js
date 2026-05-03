@@ -1,43 +1,35 @@
 import jwt from "jsonwebtoken";
 import * as petService from "#pet";
 import { WebSocketServer, WebSocket } from "ws";
+import { evaluateAchievements } from "#achievements";
 
-const activePets = new Map(); 
+const activePets = new Map();
 const clients = new Map();
 
-const applyPetUpdate = (userId, updater) => {
-  const pet = activePets.get(userId);
-  if (!pet) return;
-
-  const updated = updater(pet);
-
-  if (!updated) return;
+const handlePetUpdate = async (userId, pet, ws, animation = null) => {
+  const updated = petService.calculatePetState(pet);
 
   activePets.set(userId, updated);
 
+  const newAchievements = await evaluateAchievements(userId, updated);
+
+  if (newAchievements?.length > 0 && ws?.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      type: "achievements_unlocked",
+      achievements: newAchievements,
+    }));
+  }
+
+  if (ws?.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      type: "pet_update",
+      pet: updated,
+      animation,
+    }));
+  }
+
   return updated;
 };
-
-setInterval(() => {
-  for (const [userId, pet] of activePets.entries()) {
-    const updated = applyPetUpdate(userId, (p) => {
-      const next = petService.calculatePetState(p);
-      return {
-        ...next,
-      };
-    }); 
-
-    if (!updated) continue;
-
-    const ws = clients.get(userId);
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: "pet_state",
-        pet: updated,
-      }));
-    }
-  }
-}, 5000);
 
 setInterval(async () => {
   await Promise.all(
@@ -47,15 +39,21 @@ setInterval(async () => {
   );
 }, 30000);
 
-export const createPetSocket = (server) => {
+setInterval(async () => {
+  for (const [userId, pet] of activePets.entries()) {
+    const ws = clients.get(userId);
+    const next = petService.calculatePetState(pet);
 
+    await handlePetUpdate(userId, next, ws);
+  } 
+}, 5000);
+
+export const createPetSocket = (server) => {
   const wss = new WebSocketServer({ server, path: "/ws" });
 
   wss.on("connection", async (ws, req) => {
     try {
-      const query = req.url.split("?")[1];
-      const params = new URLSearchParams(query);
-      const token = params.get("token");
+      const token = new URLSearchParams(req.url.split("?")[1]).get("token");
 
       if (!token) {
         ws.send(JSON.stringify({ type: "invalid_token" }));
@@ -63,29 +61,22 @@ export const createPetSocket = (server) => {
         return;
       }
 
-      const decoded = (() => {
-        try {
-          return jwt.verify(token, process.env.JWT_SECRET);
-        } catch (err) {
+      let decoded;
 
-          console.error("JWT error:", err.message);
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        ws.send(JSON.stringify({
+          type: err.name === "TokenExpiredError"
+            ? "token_expired"
+            : "invalid_token",
+        }));
 
-          if (err.name === 'TokenExpiredError') {
-            ws.send(JSON.stringify({ type: 'token_expired' }));
-          } else {
-            ws.send(JSON.stringify({ type: 'invalid_token' }));
-          }
-          
-          setTimeout(() => ws.close(), 50);
-
-          return null;
-        }
-      })();
-
-      if (!decoded) return;
+        setTimeout(() => ws.close(), 50);
+        return;
+      }
 
       const userId = decoded.id;
-      console.log("Pet socket connected:", userId);
 
       const pet = await petService.getPet(userId);
 
@@ -99,47 +90,30 @@ export const createPetSocket = (server) => {
       }));
 
       ws.on("message", async (message) => {
-
         const data = JSON.parse(message);
 
-        if (data.action === "update" && (decoded.role === 'admin' || process.env.MODE === 'development')) {
-          
-          const updated = applyPetUpdate(userId, (pet) => {
-            
-            const current = petService.calculatePetState(pet);
+        const currentPet = activePets.get(userId);
+        if (!currentPet) return;
 
-            if (!(data.field in current)) return current;
+        //админские действия
+        if (
+          data.action === "update" &&
+          (decoded.role === "admin" || process.env.MODE === "development")
+        ) {
+          const updated = {
+            ...currentPet,
+            [data.field]: data.value,
+            last_updated: new Date(),
+          };
 
-            return {
-              ...current,
-              [data.field]: data.value,
-              last_updated: new Date(),
-            };
-          });
-
-          if (!updated) return;
-
-          console.log(data.field, data.value);
-
-          ws.send(JSON.stringify({
-            type: "pet_update",
-            pet: updated,
-            animation: "idle",
-          }));
-
+          await handlePetUpdate(userId, updated, ws, "idle");
           return;
         }
 
         //действия с питомцем
         if (data.action) {
-          const updated = applyPetUpdate(userId, (pet) =>
-            petService.applyAction(pet, data.action)
-          );
-
-          ws.send(JSON.stringify({
-            type: "pet_update",
-            pet: updated,
-          }));
+          const acted = petService.applyAction(currentPet, data.action);
+          await handlePetUpdate(userId, acted, ws);
         }
       });
 
@@ -148,16 +122,14 @@ export const createPetSocket = (server) => {
 
         if (pet) {
           await petService.savePet(userId, pet);
-          clients.delete(userId);
-          activePets.delete(userId);
         }
-      });
 
+        clients.delete(userId);
+        activePets.delete(userId);
+      });
     } catch (err) {
       console.error("socket error", err);
       ws.close();
     }
   });
-
-
 };

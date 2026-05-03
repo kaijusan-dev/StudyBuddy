@@ -55,6 +55,7 @@ export const PET_BALANCE = {
       fullness: 10,
       energy: 5,
       xp: 3,
+      feed_count: 1
     },
 
     PLAY: {

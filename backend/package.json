@@ -26,6 +26,7 @@
     "#schedule": "./src/modules/schedule/index.js",
     "#pet": "./src/modules/pet/index.js",
     "#auth": "./src/modules/auth/index.js",
-    "#infra": "./src/infrastructure/index.js"
+    "#infra": "./src/infrastructure/index.js",
+    "#achievements": "./src/modules/achievements/index.js"
   }
 }
