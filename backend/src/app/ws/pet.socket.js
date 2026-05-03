@@ -42,10 +42,7 @@ setInterval(() => {
 setInterval(async () => {
   await Promise.all(
     [...activePets.entries()].map(([userId, pet]) =>
-      petService.savePet(userId, {
-        ...pet,
-        last_updated: new Date(),
-      })
+      petService.savePet(userId, pet)
     )
   );
 }, 30000);
@@ -105,35 +102,16 @@ export const createPetSocket = (server) => {
 
         const data = JSON.parse(message);
 
-        if (data.action === "feed") {
-          const pet = activePets.get(userId);
-
+        if (data.action === "update" && (decoded.role === 'admin' || process.env.MODE === 'development')) {
+          
           const updated = applyPetUpdate(userId, (pet) => {
+            
             const current = petService.calculatePetState(pet);
+
+            if (!(data.field in current)) return current;
 
             return {
               ...current,
-              fullness: Math.min(current.fullness + 20, 100),
-              last_updated: new Date(),
-            };
-          });
-          
-          if (!updated) return;
-
-          ws.send(JSON.stringify({
-            type: "pet_update",
-            pet: updated,
-            animation: "eat",
-          }));
-        }
-
-        if (data.action === "update" && decoded.role === 'admin') {
-
-          const pet = activePets.get(userId);
-
-          const updated = applyPetUpdate(userId, (pet) => {
-            return {
-              ...pet,
               [data.field]: data.value,
               last_updated: new Date(),
             };
@@ -141,10 +119,26 @@ export const createPetSocket = (server) => {
 
           if (!updated) return;
 
+          console.log(data.field, data.value);
+
           ws.send(JSON.stringify({
             type: "pet_update",
             pet: updated,
             animation: "idle",
+          }));
+
+          return;
+        }
+
+        //действия с питомцем
+        if (data.action) {
+          const updated = applyPetUpdate(userId, (pet) =>
+            petService.applyAction(pet, data.action)
+          );
+
+          ws.send(JSON.stringify({
+            type: "pet_update",
+            pet: updated,
           }));
         }
       });
@@ -153,10 +147,7 @@ export const createPetSocket = (server) => {
         const pet = activePets.get(userId);
 
         if (pet) {
-          await petService.savePet(userId, {
-            ...pet,
-            last_updated: new Date(),
-          });
+          await petService.savePet(userId, pet);
           clients.delete(userId);
           activePets.delete(userId);
         }

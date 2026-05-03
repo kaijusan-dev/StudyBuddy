@@ -72,7 +72,7 @@ export default function PetPage() {
   const handleOpenModal = (modalName) => setOpenModal(modalName);
   const handleCloseModal = () => setOpenModal(null);
 
-   if (!pet) return <div>Loading pet...</div>;
+  if (!pet) return <div>Loading pet...</div>;
 
   return (
     <>

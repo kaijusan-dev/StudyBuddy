@@ -1,44 +1,66 @@
 import { usePet } from "../../../context/PetSocketContext";
 
 export default function PetTab() {
+  const { pet, updateStat } = usePet();
 
-    const { pet, updateStat } = usePet();
+  if (!pet) return null;
 
-    const stats = ["fullness", "energy", "happiness"];
+  const stats = ["fullness", "energy", "happiness"];
 
-    if (!pet) return null;
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-    const change = (field, delta) => {
-        const newValue = Math.max(0, Math.min(100, pet[field] + delta));
+  const MAX = {
+    fullness: 30,
+    energy: 100,
+    happiness: 100,
+  };
 
-        if (delta < 0) {
-            pet.fullness = Math.max(0, pet.fullness + delta);
-        }
+  const change = (field, delta) => {
+    const current = pet[field] ?? 0;
+    const newValue = clamp(current + delta, 0, MAX[field]);
 
-        updateStat(field, newValue);
-    };
+    updateStat(field, newValue);
+  };
 
-    return (
-        <div>
-        <h3>Pet Editor</h3>
+  const setExact = (field, value) => {
+    const num = Number(value);
+    if (Number.isNaN(num)) return;
 
-        {stats.map((field) => (
-            <div key={field} style={{ marginBottom: 12 }}>
-            <strong>
-                {field}: {pet[field]}
-            </strong>
+    const newValue = clamp(num, 0, MAX[field]);
+    updateStat(field, newValue);
+  };
 
-            <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => change(field, -100)}>-100</button>
-                <button onClick={() => change(field, -10)}>-10</button>
+  const normalize = (value, max) => {
+    if (!max) return 0;
+    return (value / max) * 100;
+  };
 
-                <progress value={pet[field]} max="100" />
+  return (
+    <div>
+      <h3>Pet Editor</h3>
 
-                <button onClick={() => change(field, 10)}>+10</button>
-                <button onClick={() => change(field, 100)}>+100</button>
-            </div>
-            </div>
-        ))}
+      {stats.map((field) => (
+        <div key={field} style={{ marginBottom: 16 }}>
+          <strong>
+            {field}: {Math.round(pet[field] ?? 0)}
+          </strong>
+
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <button onClick={() => change(field, -100)}>-100</button>
+            <button onClick={() => change(field, -10)}>-10</button>
+            <button onClick={() => change(field, -5)}>-5</button>
+
+            <progress
+              value={normalize(pet[field] ?? 0, MAX[field])}
+              max={100}
+            />
+
+            <button onClick={() => change(field, 5)}>+5</button>
+            <button onClick={() => change(field, 10)}>+10</button>
+            <button onClick={() => change(field, 100)}>+100</button>
+          </div>
         </div>
-    );
+      ))}
+    </div>
+  );
 }

@@ -102,7 +102,7 @@ export function usePetSocket(token) {
       if (socketRef.current) {
         socketRef.current.close();
       }
-    };
+    };  
   }, [token, loading]);
 
   const sendAction = (action) => {
@@ -115,7 +115,9 @@ export function usePetSocket(token) {
 
   const updateStat = (field, value) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({ action: "update", field, value }));
+      socketRef.current.send(
+        JSON.stringify({ action: "update", field, value })
+      );
     } else {
       console.warn("WS not ready");
     }
@@ -126,6 +128,6 @@ export function usePetSocket(token) {
     pet,
     setPet,
     updateStat,
-    feedPet: () => sendAction("feed"),
+    feedPet: () => sendAction("FEED"),
   };
 }

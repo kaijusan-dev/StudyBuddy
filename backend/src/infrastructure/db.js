@@ -74,6 +74,7 @@ async function initializePetsTable() {
           fullness REAL DEFAULT 100,
           happiness INTEGER DEFAULT 100,
           energy INTEGER DEFAULT 100,
+          xp INTEGER DEFAULT 0,
           last_updated TIMESTAMPTZ DEFAULT NOW()
       );
   `;
