@@ -3,20 +3,24 @@ from config import BACKEND_URL
 
 user_tokens = {}
 
-async def authorize_user(telegram_id: int):
-    """Получает токен для пользователя по tg_id (необязательно)"""
+async def get_token_for_user(telegram_id: int) -> str | None:
+    """Получает JWT-токен по telegram_id (POST /api/login/telegram)"""
+    if telegram_id in user_tokens:
+        return user_tokens[telegram_id]
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(
-                f"{BACKEND_URL}/api/login",
-                params={"tg_id": telegram_id}
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(
+                f"{BACKEND_URL}/api/login/telegram",
+                json={"telegram_id": telegram_id}
             )
-            if response.status_code == 200:
-                data = response.json()
+            if resp.status_code == 200:
+                data = resp.json()
                 token = data.get("token")
                 if token:
                     user_tokens[telegram_id] = token
                     return token
-    except Exception:
-        pass
+            else:
+                print(f"Ошибка авторизации: {resp.status_code} - {resp.text}")
+    except Exception as e:
+        print(f"Ошибка соединения с бэкендом: {e}")
     return None
