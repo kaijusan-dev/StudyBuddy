@@ -75,10 +75,4 @@ export const PET_BALANCE = {
       fullness: -2,
     },
   },
-
-  DECAY: {
-    FULLNESS_PER_SEC: 0.8,
-    HAPPINESS_PER_SEC: 0.05,
-    ENERGY_PER_SEC: 0.02,
-  },
 };

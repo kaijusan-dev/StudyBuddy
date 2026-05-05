@@ -8,6 +8,14 @@ const findUserById = async (id) => {
     return res.rows[0] || null;
 };
 
+const findUserByTgId = async (tg_id) => {
+    const res = await pool.query(`
+        SELECT * FROM users WHERE tg_id = $1`, 
+        [tg_id]
+    )
+    return res.rows[0] || null;
+};
+
 const findUserByUsername = async (username) => {
     const res = await pool.query(`
         SELECT * FROM users WHERE username = $1`, 
@@ -34,4 +42,4 @@ const createUser = async ({ username, email, group_id, password }) => {
   return res.rows[0]
 };
 
-export {findUserById, findUserByUsername, findUserByEmail, createUser};
+export {findUserById, findUserByTgId, findUserByUsername, findUserByEmail, createUser};

@@ -1,4 +1,4 @@
-import {findUserByUsername, findUserByEmail, createUser} from './auth.repository.js'
+import {findUserByUsername, findUserByEmail, createUser, findUserByTgId} from './auth.repository.js'
 import * as bcrypt from 'bcrypt'
 
 async function registerUser(user) {
@@ -47,6 +47,18 @@ async function loginUser({identifier, password}) {
     return userData;
 }
 
+async function loginUserByTg(tg_id) {
+
+    const user = findUserByTgId(tg_id);
+    if (!user) {
+        throw new Error('Пользователь не найден');
+    }
+
+    const {password: userPassword, ...userData} = user;
+
+    return userData;
+}
+
 async function createTestUser() {
   try {
     const user = await registerUser({
@@ -61,4 +73,4 @@ async function createTestUser() {
   catch {};
 }
 
-export { registerUser, loginUser, createTestUser };
+export { registerUser, loginUser, loginUserByTg, createTestUser };

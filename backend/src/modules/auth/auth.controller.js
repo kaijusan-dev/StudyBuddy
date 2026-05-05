@@ -1,4 +1,4 @@
-import { registerUser, loginUser } from './auth.service.js';
+import { registerUser, loginUser, loginUserByTg } from './auth.service.js';
 import {generateToken} from '#infra';
 
 const register = async (req, res) => {
@@ -20,4 +20,14 @@ const login = async (req, res) => {
     }
 }
 
-export { register, login };
+const loginByTg = async (req, res) => {
+    try {
+        const user = await loginUserByTg(req.body);
+        const token = await generateToken({id: user.id, role: user.role});
+        res.status(200).json({user, token});
+    } catch(err) {
+        res.status(400).json({message: err.message});
+    }
+}
+
+export { register, login, loginByTg };
