@@ -3,7 +3,7 @@
 
   font-family: 'Thin Pixel', monospace;
 
-  font-size: 80px;
+  font-size: 6em;
   color: #fcf4ce; 
 
   text-shadow:
@@ -21,7 +21,7 @@
 }
 
 .form label {
-  font-size: 50px;
+  font-size: 4em;
   color: #ffffe2;
   text-shadow: 4px 4px 0 #4d51b9;
   margin-bottom: 5px;

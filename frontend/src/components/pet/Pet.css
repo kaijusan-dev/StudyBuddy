@@ -1,7 +1,107 @@
+.pet-layout {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+.pet-status {
+  display: flex;  
+  flex-direction: column;
+  background-color: #fcf4ce;
+  border: 4px solid #bcbcfc;
+}
+
+.pet-area {
+  position: relative;
+
+  min-width: 0;
+
+  display: flex;
+  justify-content: center;
+
+  min-height: 500px;
+  width: 100%;
+
+  padding: 60px;
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+
+}
+
+.pet-background {
+  position: absolute;
+
+  inset: 0;
+
+  background-image: url('/assets/pet-area-background.png');
+  background-size: 800px;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+
+  image-rendering: pixelated;
+
+  z-index: 1;
+}
+
+.pet-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.title {
+  text-align: center;
+
+  font-family: 'Thin Pixel', monospace;
+
+  font-size: 6em;
+
+  text-shadow:
+    3px 3px 0 #5c64c4,   
+    0 0 0 #5c64c4;
+
+  margin: 0;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-text {
+  min-width: 60px;
+  font-size: 3em;
+  color: #ffffff;
+  transform: translateX(-565px);
+} 
+
+.stat img {
+  height: 70px;
+
+  image-rendering: pixelated;
+
+  flex-shrink: 0;
+}
+
 .pet-avatar {
+  position: relative;
+
+  z-index: 2;
+
   width: 560px;
   height: 560px;
+
   background-repeat: no-repeat;
+
+  image-rendering: pixelated;
+
+  transform: translateY(-70px);
 }
 
 .idle {
@@ -24,15 +124,42 @@
 
 @keyframes idle {
   from { background-position: 0 0; }
-  to { background-position: -6720px 0; } /* 560 * 12 */
+  to { background-position: -6720px 0; }
 }
 
 @keyframes happy {
   from { background-position: 0 0; }
-  to { background-position: -10080px 0; } /* 560 * 18 */
+  to { background-position: -10080px 0; }
 }
 
 @keyframes angry {
   from { background-position: 0 0; }
-  to { background-position: -4480px 0; } /* 560 * 8 */
+  to { background-position: -4480px 0; }
+}
+
+@media (max-width: 768px) {
+  .pet-avatar {
+    width: 320px;
+    height: 320px;
+  }
+
+  .idle {
+    background-size: calc(320px * 12) 320px;
+  }
+
+  .happy {
+    background-size: calc(320px * 18) 320px;
+  }
+
+  .angry {
+    background-size: calc(320px * 8) 320px;
+  }
+
+  .pet-area {
+    min-height: 320px;
+  }
+
+  .pet-actions {
+    flex-direction: column;
+  }
 }

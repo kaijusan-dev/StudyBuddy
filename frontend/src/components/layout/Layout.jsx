@@ -18,9 +18,7 @@ export default function Layout() {
             <div className={styles.Content}>
                 {loading
                     ? <div>Загрузка...</div>
-                    : <div className='wrapper'>
-                        <Outlet />
-                      </div>
+                    : <Outlet />
                 }    
             </div>
 

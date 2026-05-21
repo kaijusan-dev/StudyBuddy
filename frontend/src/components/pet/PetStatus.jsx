@@ -1,4 +1,6 @@
 import { usePet } from "../../context/PetSocketContext";
+import StatBar from "./bar/StatBar";
+import './Pet.css'
 
 export default function PetStatus() {
   const { pet } = usePet();
@@ -17,30 +19,50 @@ export default function PetStatus() {
   };
 
   return (
-    <div>
-      <p>
-        Сытость
-        <progress
+    <div className="pet-status">
+
+      <h3 className='title'>Состояние</h3>       
+
+      <div className='stat'>
+        <img src="/assets/bar/food-icon.png" />
+
+        <StatBar
           value={normalize(pet.fullness ?? 0, MAX.fullness)}
-          max={100}
+          type="food-bar"
         />
-      </p>
 
-      <p>
-        Энергия
-        <progress
+        <span className='stat-text'>
+          {Math.round(pet.fullness ?? 0)}/{MAX.fullness}
+        </span>
+
+      </div>
+
+      <div className='stat'>
+        <img src="/assets/bar/energy-icon.png" />
+
+        <StatBar
           value={normalize(pet.energy ?? 0, MAX.energy)}
-          max={100}
+          type="energy-bar"
         />
-      </p>
 
-      <p>
-        Счастье
-        <progress
+        <span className='stat-text'>
+          {Math.round(pet.energy ?? 0)}/{MAX.energy}
+        </span>
+
+      </div>
+
+      <div className='stat'>
+        <img src="/assets/bar/happiness-icon.png" />
+
+        <StatBar
           value={normalize(pet.happiness ?? 0, MAX.happiness)}
-          max={100}
+          type="happiness-bar"
         />
-      </p>
+
+        <span className='stat-text'>
+          {Math.round(pet.happiness ?? 0)}/{MAX.happiness}
+        </span>
+      </div>
     </div>
   );
 }

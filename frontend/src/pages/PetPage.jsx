@@ -13,6 +13,7 @@ import api from "../api/api";
 import ProfilePage from "./ProfilePage";
 import { useSchedule } from "../context/ScheduleContext";
 import AchievementsPage from "./AchievementsPage";
+import Pet from "../components/pet/Pet";
 
 export default function PetPage() {
 
@@ -63,9 +64,9 @@ export default function PetPage() {
     }
   }
 
-  const {schedule, setSchedule} = useSchedule();
+  const {schedule, setSchedule, loading} = useSchedule();
   
-  const isSchedule = schedule.length > 0;
+  const isSchedule = schedule?.length > 0 && !loading;
 
   const {pet} = usePet();
 
@@ -93,25 +94,17 @@ export default function PetPage() {
       {isSchedule && 
         (
         <div className="pet-page">
-          <header className="pet-status">
-            {isSchedule && <PetStatus />}
-          </header>
 
           <div className="left-panel">
             <SidebarButtons onClick={handleOpenModal}/>
           </div>
 
-          <div className="pet-area">
-            {isSchedule && <PetAvatar/>}
-          </div>
+          <Pet />
 
           <div className="right-panel">
+            <PetStatus />
             <DailySchedule handleOpenModal={handleOpenModal}/>
           </div>
-
-          <footer className="pet-actions">
-            {isSchedule && <PetActions />}
-          </footer>
 
           {/* Обычные модалки */}
           {openModal && (

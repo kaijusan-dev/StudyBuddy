@@ -59,6 +59,7 @@
 }
 
 .tabs {
+  font-size: 3em;
   display: flex;
   width: 100%;
   gap: 8px;

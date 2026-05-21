@@ -1,4 +1,5 @@
 import { usePet } from "../../../context/PetSocketContext";
+import styles from "./AdminTabs.module.css";
 
 export default function PetTab() {
   const { pet, updateStat } = usePet();
@@ -38,28 +39,29 @@ export default function PetTab() {
   };
 
   return (
-    <div>
-      <h3>Pet Editor</h3>
+    <div className={styles.container}>
+      <h3 className={styles.title}>Pet Editor</h3>
 
       {stats.map((field) => (
-        <div key={field} style={{ marginBottom: 16 }}>
+        <div key={field} style={{ marginBottom: 16 }} className={styles.card}>
           <strong>
-            {field}: {Math.round(pet[field] ?? 0)}
+            {field}: {pet[field] ?? 0}
           </strong>
 
-          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-            <button onClick={() => change(field, -100)}>-100</button>
-            <button onClick={() => change(field, -10)}>-10</button>
-            <button onClick={() => change(field, -5)}>-5</button>
+          <div className={styles.statControls}>
+            <button onClick={() => change(field, -100)} className={styles.button}>-100</button>
+            <button onClick={() => change(field, -10)} className={styles.button}>-10</button>
+            <button onClick={() => change(field, -5)} className={styles.button}>-5</button>
 
             <progress
+              className={styles.progress}
               value={normalize(pet[field] ?? 0, MAX[field])}
               max={100}
             />
 
-            <button onClick={() => change(field, 5)}>+5</button>
-            <button onClick={() => change(field, 10)}>+10</button>
-            <button onClick={() => change(field, 100)}>+100</button>
+            <button onClick={() => change(field, 5)} className={styles.button}>+5</button>
+            <button onClick={() => change(field, 10)} className={styles.button}>+10</button>
+            <button onClick={() => change(field, 100)} className={styles.button}>+100</button>
           </div>
         </div>
       ))}

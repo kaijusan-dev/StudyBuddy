@@ -88,7 +88,7 @@ export function usePetSocket(token) {
 
         reconnectAttemptsRef.current += 1;
 
-        const delay = Math.min(2000 * reconnectAttemptsRef.current, 15000);
+        const delay = Math.min(1000 * reconnectAttemptsRef.current, 15000);
 
         console.log(`WS Reconnect in ${delay}ms`);
 

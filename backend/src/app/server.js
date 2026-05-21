@@ -28,12 +28,13 @@ async function startServer() {
 
         await initializeUserRoleEnum();
         await initializeUsersTable();
+
+        if(process.env.MODE === 'development') await createTestUser();
+
         await initializeScheduleTable();
         await initializePetsTable();
 
         console.log('Tables initialized');
-
-        if(process.env.MODE === 'development') await createTestUser();
 
     } catch (err) {
         console.error('Error starting server:', err);

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import RegisterForm from '../components/forms/RegisterForm';
 import LoginForm from '../components/forms/LoginForm';
@@ -18,6 +18,18 @@ export default function AuthPage({type}) {
     });
 
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        setErrors({});
+        setState({
+            username: '', 
+            email: '',
+            identifier: '',
+            group_id: '',
+            password: '',
+            passwordAgain: '',
+        });
+    }, [type]);
 
     const navigate = useNavigate();
     const {login} = useAuth();

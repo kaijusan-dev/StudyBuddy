@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/api";
-import styles from "./UsersTab.module.css";
+import styles from "./AdminTabs.module.css";
 
 export default function UsersTab() {
   const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ export default function UsersTab() {
       <h2 className={styles.title}>Users</h2>
 
       <div className={styles.table}>
-        <div className={styles.header}>
+        <div className={`${styles.header} ${styles.usersGrid}`}>
           <span> ID </span>
           <span> Username </span>
           <span> Group </span>
@@ -54,7 +54,7 @@ export default function UsersTab() {
         </div>
 
         {users.map(u => (
-          <div key={u.id} className={styles.row}>
+          <div key={u.id} className={`${styles.row} ${styles.usersGrid}`}>
             <span>{u.id}</span>
             <span>{u.username}</span>
             <span>{u.group_id}</span>
@@ -70,14 +70,14 @@ export default function UsersTab() {
             <div className={styles.actions}>
               <button
                 onClick={() => toggleRole(u.id)}
-                className={styles.toggle}
+                className={styles.button}
               >
                 toggle
               </button>
 
               <button
                 onClick={() => deleteUser(u.id)}
-                className={styles.delete}
+                className={`${styles.button} ${styles.delete}`}
               >
                 🗑
               </button>

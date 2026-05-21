@@ -1,4 +1,5 @@
 .profileCard {
+  font-size: 3em;
   width: 100%;
   max-width: 700px;
 
@@ -44,14 +45,12 @@
 /* подпись */
 .row span {
   color: #2a2a3a;
-  font-size: 14px;
 }
 
 /* значение */
 .row p {
   margin: 0;
   color: #141414;
-  font-size: 16px;
 }
 
 .row:hover {

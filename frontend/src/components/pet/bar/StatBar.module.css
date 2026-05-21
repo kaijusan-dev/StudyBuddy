@@ -1,0 +1,21 @@
+.stat-bar {
+  width: 560px;
+  height: 27px;
+
+  background-repeat: no-repeat;
+  background-size: 560px auto;
+    
+  flex-shrink: 0;
+}
+
+.food-bar {
+    background-image: url('/assets/bar/food-bar.png');
+}
+
+.energy-bar {
+    background-image: url('/assets/bar/energy-bar.png');
+}
+
+.happiness-bar {
+    background-image: url('/assets/bar/happiness-bar.png');
+}

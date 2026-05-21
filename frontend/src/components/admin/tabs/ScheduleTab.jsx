@@ -3,6 +3,7 @@ import AddEventForm from "../../forms/AddEventForm";
 import { formatTime, formatForInput, isSameDay } from "../../schedule/schedule.utils";
 import { useAuth } from "../../../context/AuthContext";
 import { useSchedule } from "../../../context/ScheduleContext";
+import styles from "./AdminTabs.module.css";
 
 export default function ScheduleTab() {
   const { schedule, createEvent, deleteEvent, deleteAllToday } = useSchedule();
@@ -82,19 +83,19 @@ export default function ScheduleTab() {
   };
 
   return (
-    <div>
-      <h3>Управление событиями на сегодня</h3>
+    <div className={styles.container}>
+      <h3 className={styles.title}>Управление событиями на сегодня</h3>
 
-      <button onClick={() => setShowModal(prev => !prev)}>
+      <button className={styles.button} onClick={() => setShowModal(prev => !prev)}>
         Добавить событие
       </button>
 
-      <button onClick={createQuickEvent}>
+      <button className={styles.button} onClick={createQuickEvent}>
         Быстрое событие
       </button>
 
       {todayEvents.length > 0 && (
-        <button onClick={deleteAllToday}>
+        <button className={styles.button} onClick={deleteAllToday}>
           Удалить все события сегодня
         </button>
       )}
@@ -129,7 +130,7 @@ export default function ScheduleTab() {
               <b>{event.summary}</b> <br />
               <span>{`${formatTime(event.start_time)}-${formatTime(event.end_time)}`}</span>
             </div>
-            <button onClick={() => deleteEvent(event.id)}>Удалить</button>
+            <button className={`${styles.button} ${styles.delete}`} onClick={() => deleteEvent(event.id)}>Удалить</button>
           </div>
         ))}
       </div>
