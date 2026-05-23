@@ -68,7 +68,7 @@ export default function AuthPage({type}) {
 
                 login(res.data.user, res.data.token);
 
-                navigate('/pet');
+                navigate('/');
             }
         } catch (err) {
             console.error(err);

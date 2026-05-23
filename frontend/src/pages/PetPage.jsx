@@ -53,8 +53,6 @@ export default function PetPage() {
       setSchedule(updatedSchedule.data);
 
       handleCloseModal();
-
-      setIsSchedule(true);
       
     } catch (err) {
         console.error(err);
@@ -66,7 +64,7 @@ export default function PetPage() {
 
   const {schedule, setSchedule, loading} = useSchedule();
   
-  const isSchedule = schedule?.length > 0 && !loading;
+  const isSchedule = schedule?.length > 0;
 
   const {pet} = usePet();
 
@@ -79,7 +77,7 @@ export default function PetPage() {
   return (
     <>
       {/* Обязательная модалка */}
-      {!isSchedule && (
+      {!isSchedule && !loading && (
         <Modal onClose={handleCloseModal}>
           <ScheduleForm 
             state={state} 
