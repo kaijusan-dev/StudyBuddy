@@ -1,21 +1,62 @@
-.stat-bar {
-  width: 560px;
-  height: 27px;
+.statBar {
+  position: relative;
 
+  height: clamp(10px, 1vw, 20px);
+
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+/* фон */
+.empty {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/bar/empty-bar.png');
+  background-size: 100% 100%;
+}
+
+/* слой заполнения */
+.fill {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+}
+
+/* фиксированная ячейка */
+.slot {
+  position: relative;
+  overflow: hidden;
+}
+
+.clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* текстура */
+.inner {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-size: 560px auto;
-    
-  flex-shrink: 0;
 }
 
 .food-bar {
-    background-image: url('/assets/bar/food-bar.png');
+  background-image: url('/assets/bar/food-bar.png');
 }
 
 .energy-bar {
-    background-image: url('/assets/bar/energy-bar.png');
+  background-image: url('/assets/bar/energy-bar.png');
 }
 
 .happiness-bar {
-    background-image: url('/assets/bar/happiness-bar.png');
+  background-image: url('/assets/bar/happiness-bar.png');
 }

@@ -1,39 +1,37 @@
 .pet-page {
-  display: grid;
-  grid-template-columns: 650px 1fr 650px;
-
   width: 100%;
-  height: 100%;
+  height: 93vh;
 
-  padding: 36px;
+  display: grid;
 
-  box-sizing: border-box;
+  grid-template-columns: 1fr 1fr 1fr;
 
-  max-height: calc(100vh - 60px);
+  gap: 24px;
+
+  margin: 0 auto;
+
+  align-items: center;
+  padding: 24px;
+}
+
+.left-panel,
+.right-panel {
+  min-height: 0;
 }
 
 .left-panel {
-  align-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .right-panel {
   display: flex;
   flex-direction: column;
-}
+  gap: 20px;
 
-
-.right-panel,
-.left-panel {
+  min-width: 0;
   min-height: 0;
-}
 
-@media (max-width: 1024px) {
-  .pet-page {
-    grid-template-columns: 1fr;
-  }
-
-  .left-panel,
-  .right-panel {
-    display: none;
-  }
+  height: 100%;
 }

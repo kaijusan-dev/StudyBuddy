@@ -8,9 +8,14 @@
   box-shadow: 8px 8px 0 #5c64c4;
 
   height: 100%;
-  min-height: 0;
-}
+  max-width: 100%;
+  width: 100%;
 
+  flex: 1;
+  min-height: 0; 
+  overflow: hidden;
+}
+  
 .titlebar {
   background-color: #bcbcfc;
   padding: 8px;
@@ -43,8 +48,9 @@
   flex-direction: column;
   gap: 12px;
 
-  flex: 1;
+  flex: 1;  
   overflow-y: auto;
+  min-height: 0;
 }
 
 .title {
@@ -52,7 +58,7 @@
 
   font-family: 'Thin Pixel', monospace;
 
-  font-size: 6em;
+  font-size: calc(2.5rem * var(--ui-scale));
 
   text-shadow:
     3px 3px 0 #5c64c4,   
@@ -62,12 +68,13 @@
 }
 
 .empty {
-  font-size: 5em;
+  font-size: calc(2rem * var(--ui-scale));
   text-align: center;
 }
 
 .item {
-  font-size: 2em;
+  font-size: calc(1.2rem * var(--ui-scale));
+
   background-color: #bcbcfc;
   border: 3px solid #bcbcfc;
 

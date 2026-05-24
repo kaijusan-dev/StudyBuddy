@@ -1,68 +1,101 @@
-@font-face {
-  font-family: 'Thin Pixel';
-  src: url('/fonts/thin_pixel-7.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+  @font-face {
+    font-family: 'Thin Pixel';
+    src: url('/fonts/thin_pixel-7.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 
-* {
-  box-sizing: border-box;
-  font-family: 'Thin Pixel', monospace !important;
-}
+  * {
+    box-sizing: border-box;
+    font-family: 'Thin Pixel', monospace !important;
+  }
 
-/* body {
-  flex: 1;
-  overflow: auto;
-  width: 100%;
-  max-width: 100%; 
-  overflow-x: hidden; 
-  margin: 0;
-  padding: 0;
-} */
+  #root {
+    min-height: 100vh;
+  }
 
-body {
-  margin: 0;
-  padding: 0;
+  html,
+  body {
+    min-height: 100vh;
+  }
 
-  overflow-x: hidden;
-}
+  body {
+    margin: 0;
+    padding: 0;
 
-img {
-  max-width: 100%;
-  display: block;
-}
+    overflow-x: hidden;
+  }
 
-.RegisterForm {
-    width: max-content;
-    align-items: center;
-}
+  img {
+    max-width: 100%;
+    display: block;
+  }
 
-.AuthPage {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
+  .RegisterForm {
+      width: max-content;
+      align-items: center;
+  }
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .AuthPage {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+  }
 
-.ProfilePage {
-    align-items: center;
+  .wrapper {
     display: flex;
     flex-direction: column;
+    align-items: center;
+  }
+
+  .ProfilePage {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+  }
+
+  .LoginForm {
+      width: max-content;
+      align-items: center;
+  }
+
+  .SettingsForm {
+      width: max-content;
+      align-items: center;
+  }
+
+@media (min-width: 1200px) {
+  :root {
+    --ui-scale: 2;
+  }
+
+  .pet-avatar {
+    transform: translateY(calc(-70px * 1.1));
+  }
 }
 
-.LoginForm {
-    width: max-content;
-    align-items: center;
+@media (min-width: 2700px) {
+  :root {
+    --ui-scale: 6;
+  }
 }
 
-.SettingsForm {
-    width: max-content;
-    align-items: center;
+@media (min-width: 3700px) {
+  :root {
+    --ui-scale: 9;
+  }
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --ui-scale: 1.5;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --ui-scale: 1.2;
+  }
 }

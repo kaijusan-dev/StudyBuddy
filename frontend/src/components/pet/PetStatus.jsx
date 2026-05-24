@@ -18,6 +18,8 @@ export default function PetStatus() {
     return (value / max) * 100;
   };
 
+  const format = (value) => Math.round(value * 10) / 10;
+
   return (
     <div className="pet-status">
 
@@ -32,7 +34,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {Math.round(pet.fullness ?? 0)}/{MAX.fullness}
+          {format(pet.fullness ?? 0)}/{MAX.fullness}
         </span>
 
       </div>
@@ -46,7 +48,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {Math.round(pet.energy ?? 0)}/{MAX.energy}
+          {format(pet.energy ?? 0)}/{MAX.energy}
         </span>
 
       </div>
@@ -60,7 +62,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {Math.round(pet.happiness ?? 0)}/{MAX.happiness}
+          {format(pet.happiness ?? 0)}/{MAX.happiness}
         </span>
       </div>
     </div>

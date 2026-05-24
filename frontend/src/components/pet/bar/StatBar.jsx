@@ -1,29 +1,42 @@
 import styles from './StatBar.module.css';
 
-const SCALE = 0.35;
-
-const FRAME_COUNT = 11;
-const FRAME_HEIGHT = 70;
-const GAP = 10;
-
-const scaledFrameHeight = FRAME_HEIGHT * SCALE;
-const scaledGap = GAP * SCALE;
+const SEGMENTS = 10;
 
 export default function StatBar({ value, type }) {
   const clamped = Math.max(0, Math.min(100, value));
 
-  const frameIndex = Math.floor(
-    (clamped / 100) * (FRAME_COUNT - 1)
-  );
+  const exact = (clamped / 100) * SEGMENTS;
 
-  const offset = frameIndex * (scaledFrameHeight + scaledGap);
-
+  const full = Math.floor(exact);
+  const partial = exact - full;
+  
   return (
-    <div
-      className={`${styles['stat-bar']} ${styles[type]}`}
-      style={{
-        backgroundPosition: `0 -${offset}px`,
-      }}
-    />
+    <div className={styles.statBar}>
+      <div className={styles.empty} />
+
+      <div className={styles.fill}>
+        {Array.from({ length: SEGMENTS }).map((_, i) => {
+          let fill = 0;
+
+          if (i < full) fill = 1;
+          else if (i === full) fill = partial;
+
+          const offset = Math.round(-100 + fill * 100);
+
+          return (
+            <div key={i} className={styles.slot}>
+              <div className={styles.clip}>
+                <div
+                  className={`${styles.inner} ${styles[type]}`}
+                  style={{
+                    transform: `translateX(${offset}%)`
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

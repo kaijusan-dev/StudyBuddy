@@ -1,6 +1,8 @@
 .sidebar-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 100%;
+  max-width: 260px;
 }
