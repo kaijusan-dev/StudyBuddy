@@ -48,9 +48,7 @@
 
         await api.post('/profile/telegram', {tg_id});
 
-        const updatedSchedule = await api.get('/schedule');
-
-        setSchedule(updatedSchedule.data);
+        await fetchSchedule();
 
         handleCloseModal();
         
@@ -62,9 +60,9 @@
       }
     }
 
-    const {schedule, setSchedule, loading } = useSchedule();
+    const {schedule, setSchedule, fetchSchedule, loading } = useSchedule();
     
-    const hasSchedule = schedule.length > 0;
+    const hasSchedule = !loading && schedule.length > 0;
 
     const {pet} = usePet();
 
