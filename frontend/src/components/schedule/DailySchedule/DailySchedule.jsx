@@ -6,13 +6,7 @@ import { useSchedule } from '../../../context/ScheduleContext';
 
 export default function DailySchedule({handleOpenModal}) {
     const { schedule, setSchedule, loading } = useSchedule();
-
-    useEffect(() => {
-        if (!loading && schedule.length === 0) {
-            handleOpenModal('schedule');
-        }
-    }, [loading]);
-
+    
     if(!schedule) return null;
 
     const [now, setNow] = useState(new Date());

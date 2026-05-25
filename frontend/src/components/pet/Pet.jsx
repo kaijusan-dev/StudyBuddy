@@ -12,14 +12,13 @@ export default function Pet() {
 
   return (
     <div className="pet-layout">
+
       <div className="pet-area">
         <PetBackground />
         <PetAvatar />
-      </div>
-
-      <div className="pet-actions">
         <PetActions />
       </div>
+
     </div>
   );
 }

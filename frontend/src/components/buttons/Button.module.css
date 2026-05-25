@@ -15,14 +15,13 @@
 
   text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
 
-  min-width: 300px;
-  width: auto;
-  height: 87px;
+  width: 100%;
+  height: auto;
 
   color: #141414;
 
   font-size: 7em;
-
+  padding-inline: 10%;
 }
 
 .base {
