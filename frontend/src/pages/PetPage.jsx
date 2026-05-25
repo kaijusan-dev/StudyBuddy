@@ -62,9 +62,9 @@
       }
     }
 
-    const {schedule, setSchedule} = useSchedule();
+    const {schedule, setSchedule, loading } = useSchedule();
     
-    const hasSchedule = Array.isArray(schedule) && schedule.length > 0;
+    const hasSchedule = schedule.length > 0;
 
     const {pet} = usePet();
 
@@ -72,12 +72,14 @@
     const handleOpenModal = (modalName) => setOpenModal(modalName);
     const handleCloseModal = () => setOpenModal(null);
 
-    if (!pet) return <div>Loading pet...</div>;
+    if (!pet || loading) {
+      return <div>Loading...</div>;
+    }
 
     return (
       <>
         {/* Обязательная модалка */}
-        {schedule !== null && !hasSchedule && (
+        {!hasSchedule && (
           <Modal onClose={handleCloseModal}>
             <ScheduleForm 
               state={state} 

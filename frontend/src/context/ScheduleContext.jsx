@@ -6,7 +6,8 @@ const ScheduleContext = createContext();
 
 export const ScheduleProvider = ({ children }) => {
 
-    const [schedule, setSchedule] = useState(null);
+    const [schedule, setSchedule] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         api.get('/schedule')
@@ -14,9 +15,16 @@ export const ScheduleProvider = ({ children }) => {
                 const sorted = [...res.data].sort(
                     (a, b) => new Date(a.start_time) - new Date(b.start_time)
                 );
+
                 setSchedule(sorted);
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err);
+                setSchedule([]);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
 
     const createEvent = async (payload) => {
@@ -66,7 +74,7 @@ export const ScheduleProvider = ({ children }) => {
     };
 
     return (
-        <ScheduleContext.Provider value={{ schedule, setSchedule, createEvent, deleteEvent, deleteAllToday }}>
+        <ScheduleContext.Provider value={{ schedule, setSchedule, loading, createEvent, deleteEvent, deleteAllToday }}>
             {children}
         </ScheduleContext.Provider>
     );
