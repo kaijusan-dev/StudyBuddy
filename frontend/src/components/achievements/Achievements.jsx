@@ -1,35 +1,36 @@
 import { useEffect, useState } from "react";
-import { ACHIEVEMENTS } from "../achievementsConfig.js";
-import api from "../api/api";
-import "../styles/AchievementsPage.css";
+import { ACHIEVEMENTS } from "./achievementsConfig.js";
+import api from "../../api/api.js";
+import styles from "./Achievements.module.css";
 
-export default function AchievementsPage() {
+export default function Achievements() {
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
-    api.get("/achievements")
+    api
+      .get("/achievements")
       .then((res) => setAchievements(res.data))
       .catch(console.error);
   }, []);
 
   return (
-    <div className="achievements-page">
-      <h2 className="achievements-header">Achievements</h2>
+    <div className={styles.achievements}>
+      <h2 className={styles.header}>Achievements</h2>
 
-      <div className="achievements-list">
+      <div className={styles.list}>
         {achievements.map((achievement) => {
           const config = ACHIEVEMENTS[achievement];
 
           return (
             <div
               key={achievement}
-              className="achievement-card"
+              className={styles.card}
             >
-              <div className="achievement-title">
+              <div className={styles.title}>
                 {config?.title ?? achievement}
               </div>
 
-              <div className="achievement-desc">
+              <div className={styles.description}>
                 {config?.description}
               </div>
             </div>

@@ -42,12 +42,10 @@
   box-shadow: 3px 3px 0 #5c64c4;
 }
 
-/* подпись */
 .row span {
   color: #2a2a3a;
 }
 
-/* значение */
 .row p {
   margin: 0;
   color: #141414;

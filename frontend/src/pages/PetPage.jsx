@@ -1,19 +1,30 @@
-  import PetStatus from "../components/pet/PetStatus";
-  import PetActions from "../components/pet/PetActions";
-  import SidebarButtons from "../components/sidebar/SidebarButtons";
-  import Modal from "../components/modal/Modal";
-  import { usePet } from "../context/PetSocketContext";
-  import { useState } from "react";
-  import DailySchedule from "../components/schedule/DailySchedule/DailySchedule";
-  import '../components/pet/Pet.css';
-  import PetAvatar from "../components/pet/PetAvatar";
-  import ScheduleForm from "../components/forms/ScheduleForm";
-  import { calendarUrlSchema } from "../schemas/schedule.schemas";
-  import api from "../api/api";
-  import ProfilePage from "./ProfilePage";
-  import { useSchedule } from "../context/ScheduleContext";
-  import AchievementsPage from "./AchievementsPage";
-  import Pet from "../components/pet/Pet";
+import { useState } from "react";
+
+import api from "../api/api";
+
+import { usePet } from "../context/PetSocketContext";
+import { useSchedule } from "../context/ScheduleContext";
+
+import { calendarUrlSchema } from "../schemas/schedule.schemas";
+
+import Modal from "../components/modal/Modal";
+
+import Pet from "../components/pet/Pet";
+import PetAvatar from "../components/pet/PetAvatar";
+import PetActions from "../components/pet/PetActions";
+import PetStatus from "../components/pet/PetStatus";
+
+import SidebarButtons from "../components/sidebar/SidebarButtons";
+
+import DailySchedule from "../components/schedule/DailySchedule/DailySchedule";
+
+import ScheduleForm from "../components/forms/ScheduleForm";
+
+import Profile from "../components/profile/Profile";
+import Achievements from "../components/achievements/Achievements";
+import Leaderboard from "../components/leaderboard/Leaderboard";
+
+import "../components/pet/Pet.css";
 
   export default function PetPage() {
 
@@ -107,9 +118,8 @@
             {/* Обычные модалки */}
             {openModal && (
               <Modal onClose={handleCloseModal}>
-                {openModal === "profile" && <ProfilePage />}
-                {openModal === "achievements" && <AchievementsPage />}
-                {openModal === "leaderboard" && <div>Leaderboard</div>}
+                {openModal === "profile" && <Profile />}
+                {openModal === "achievements" && <Achievements />}
               </Modal>
             )}
           </div>
