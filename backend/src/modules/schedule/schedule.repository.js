@@ -1,12 +1,20 @@
-import {pool} from '#infra';
+import { pool } from '#infra';
 
 async function getSchedule(user_id) {
-    const res = await pool.query('SELECT * FROM schedule WHERE user_id = $1', [user_id]);
+    const res = await pool.query(
+        'SELECT * FROM schedule WHERE user_id = $1',
+        [user_id]
+    );
+
     return res.rows;
 }
 
 async function getScheduleUrl(user_id) {
-    const res = await pool.query('SELECT calendar_url FROM users WHERE id = $1', [user_id]);
+    const res = await pool.query(
+        'SELECT calendar_url FROM users WHERE id = $1',
+        [user_id]
+    );
+
     return res.rows[0] ? res.rows[0].calendar_url : null;
 }
 
@@ -23,8 +31,23 @@ async function saveSchedule(schedule, user_id) {
 
         for (const event of schedule) {
             await client.query(
-                `INSERT INTO schedule (start_time, end_time, summary, user_id, completed)
-                 VALUES ($1, $2, $3, $4, $5)`,
+                `
+                INSERT INTO schedule (
+                    start_time,
+                    end_time,
+                    summary,
+                    user_id,
+                    completed
+                )
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (
+                    user_id,
+                    start_time,
+                    end_time,
+                    summary
+                )
+                DO NOTHING
+                `,
                 [
                     event.start,
                     event.end,
@@ -40,6 +63,7 @@ async function saveSchedule(schedule, user_id) {
     } catch (err) {
         await client.query('ROLLBACK');
         throw err;
+
     } finally {
         client.release();
     }
@@ -47,7 +71,7 @@ async function saveSchedule(schedule, user_id) {
 
 const updateSchedule = async (id, user_id, data) => {
     if (Object.keys(data).length === 0) {
-        throw new Error("No fields to update");
+        throw new Error('No fields to update');
     }
 
     const fields = [];
@@ -56,8 +80,10 @@ const updateSchedule = async (id, user_id, data) => {
 
     for (const key in data) {
         if (key === 'user_id') continue;
+
         fields.push(`${key} = $${index}`);
         values.push(data[key]);
+
         index++;
     }
 
@@ -85,8 +111,20 @@ const addEventToSchedule = async (event) => {
     } = event;
 
     const query = `
-        INSERT INTO schedule (start_time, end_time, summary, user_id)
+        INSERT INTO schedule (
+            start_time,
+            end_time,
+            summary,
+            user_id
+        )
         VALUES ($1, $2, $3, $4)
+        ON CONFLICT (
+            user_id,
+            start_time,
+            end_time,
+            summary
+        )
+        DO NOTHING
         RETURNING *;
     `;
 
@@ -101,16 +139,22 @@ const addEventToSchedule = async (event) => {
 };
 
 const deleteEventFromSchedule = async (id) => {
-
     const query = `
-        DELETE FROM schedule WHERE id = $1 RETURNING *;
+        DELETE FROM schedule
+        WHERE id = $1
+        RETURNING *;
     `;
 
-    const res = await pool.query(query, [
-        id
-    ]);
+    const res = await pool.query(query, [id]);
 
     return res.rows[0] || null;
 };
 
-export { getSchedule, saveSchedule, getScheduleUrl, updateSchedule, addEventToSchedule, deleteEventFromSchedule };
+export {
+    getSchedule,
+    saveSchedule,
+    getScheduleUrl,
+    updateSchedule,
+    addEventToSchedule,
+    deleteEventFromSchedule
+};

@@ -32,9 +32,13 @@ async function initializeScheduleTable() {
           end_time TIMESTAMPTZ NOT NULL,
           summary TEXT NOT NULL,
           user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-          completed BOOLEAN DEFAULT FALSE NOT NULL
+          completed BOOLEAN DEFAULT FALSE NOT NULL,
+
+          CONSTRAINT unique_schedule_event
+          UNIQUE (user_id, start_time, end_time, summary)
       );
   `;
+
   return await pool.query(createTableQuery);
 }
 

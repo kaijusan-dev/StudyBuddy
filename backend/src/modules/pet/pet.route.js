@@ -1,10 +1,11 @@
 import express from 'express'
 import * as petController from './pet.controller.js';
+import {authMiddleware} from "../auth/auth.middleware.js";
 
 export const petRouter = express.Router();
 
-petRouter.get('/', petController.getPet);
+petRouter.get('/', authMiddleware, petController.getPet);
 
-petRouter.post('/:id/complete', petController.getPet);
+petRouter.post('/:id/complete', authMiddleware, petController.getPet);
 
-petRouter.post('/update', petController.updatePet);
+petRouter.post('/update', authMiddleware, petController.updatePet);

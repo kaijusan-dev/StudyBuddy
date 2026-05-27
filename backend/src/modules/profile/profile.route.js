@@ -8,10 +8,11 @@ import path from "path";
 import { updateAvatarController } from '#infra';
 import fs from "fs";
 import { fileURLToPath } from "url";
+import {authMiddleware} from "../auth/auth.middleware.js";
 
 export const profileRouter = express.Router();
 
-profileRouter.get('/', async (req, res) => {
+profileRouter.get('/', authMiddleware, async (req, res) => {
     const user = await findUserById(req.user.id);
     const {password, ...userData} = user;
     res.json(userData);
@@ -48,9 +49,9 @@ const upload = multer({
   }
 });
 
-profileRouter.post('/avatar', upload.single("avatar"), updateAvatarController);
-profileRouter.post('/telegram', profileController.updateTelegramId);
+profileRouter.post('/avatar', authMiddleware, upload.single("avatar"), updateAvatarController);
+profileRouter.post('/telegram', authMiddleware, profileController.updateTelegramId);
 
-profileRouter.patch('/general', validate(generalSettingsSchema), profileController.updateProfile);
-profileRouter.patch('/email', validate(emailSettingsSchema), profileController.updateProfile);
-profileRouter.patch('/password', validate(passwordSettingsSchema), profileController.updateProfile);
+profileRouter.patch('/general', authMiddleware, validate(generalSettingsSchema), profileController.updateProfile);
+profileRouter.patch('/email', authMiddleware, validate(emailSettingsSchema), profileController.updateProfile);
+profileRouter.patch('/password', authMiddleware, validate(passwordSettingsSchema), profileController.updateProfile);

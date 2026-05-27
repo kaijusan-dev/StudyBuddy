@@ -22,7 +22,6 @@ import ScheduleForm from "../components/forms/ScheduleForm";
 
 import Profile from "../components/profile/Profile";
 import Achievements from "../components/achievements/Achievements";
-import Leaderboard from "../components/leaderboard/Leaderboard";
 
 import "../components/pet/Pet.css";
 
