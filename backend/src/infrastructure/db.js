@@ -57,6 +57,7 @@ async function initializeUsersTable() {
           achievements JSONB DEFAULT '[]'
       );
   `;
+
   return await pool.query(createTableQuery);
 }
 
@@ -80,6 +81,7 @@ async function initializePetsTable() {
           happiness INTEGER DEFAULT 100,
           energy INTEGER DEFAULT 100,
           xp INTEGER DEFAULT 0,
+          level INTEGER NOT NULL DEFAULT 1,
           last_updated TIMESTAMPTZ DEFAULT NOW(),
           feed_count INTEGER DEFAULT 0
       );

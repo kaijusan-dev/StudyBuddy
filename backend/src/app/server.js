@@ -3,6 +3,7 @@ import express from 'express';
 import http from 'http';
 import path from "path";
 import { fileURLToPath } from "url";
+import { pool } from "#infra";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,10 +17,30 @@ import {
   initializeUsersTable
 } from "#infra";
 
-import { createTestUser } from "#auth";
+import { createTestUser, createTestUsers } from "#admin";
 
 const server = http.createServer(app);
 createPetSocket(server);
+
+async function getUsersCount() {
+  const res = await pool.query(`SELECT COUNT(*) FROM users`);
+  return Number(res.rows[0].count);
+}
+
+async function seedTestUsersInLimit(limit = 150) {
+
+  const usersCount = await getUsersCount();
+
+  console.log("Users in DB:", usersCount);
+
+  if (usersCount >= limit) {
+    console.log("Test users already exist, skipping seeding");
+    return;
+  };
+
+  await createTestUser();
+  await createTestUsers(limit - usersCount);
+}
 
 async function startServer() {
     try {
@@ -29,7 +50,7 @@ async function startServer() {
         await initializeUserRoleEnum();
         await initializeUsersTable();
 
-        if(process.env.MODE === 'development') await createTestUser();
+        if (process.env.MODE === 'development') seedTestUsersInLimit(150);
 
         await initializeScheduleTable();
         await initializePetsTable();

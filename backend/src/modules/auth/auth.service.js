@@ -59,18 +59,4 @@ async function loginUserByTg(tg_id) {
     return userData;
 }
 
-async function createTestUser() {
-  try {
-    const user = await registerUser({
-        username: "test",
-        email: "test@test.com",
-        group_id: 1,
-        password: "123456",
-    });
-
-    console.log("created test user: ", user);
-  } 
-  catch {};
-}
-
-export { registerUser, loginUser, loginUserByTg, createTestUser };
+export { registerUser, loginUser, loginUserByTg };

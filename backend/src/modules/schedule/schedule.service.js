@@ -7,26 +7,55 @@ import { updateUser } from '#profile';
 async function fetchSchedule(calendarUrl) {
   console.log("Fetching schedule...");
 
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
-  });
+  const agent =
+    process.env.MODE === "development"
+      ? new https.Agent({
+          rejectUnauthorized: false,
+        })
+      : undefined;
 
-  const res = await fetch(calendarUrl, {agent});
+  const res = await fetch(calendarUrl, { agent });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch calendar: ${res.status}`
+    );
+  }
+
   const text = await res.text();
 
   const events = ical.parseICS(text);
+
   const schedule = [];
-  for (const key in events) {
-    const event = events[key];
-    if (event.type === "VEVENT") {
-        schedule.push({
-          start: event.start,
-          end: event.end,
-          summary: event.summary,
-        });
+
+  for (const event of Object.values(events)) {
+
+    if (
+      event.type !== "VEVENT" ||
+      !event.start ||
+      !event.end ||
+      !event.summary
+    ) {
+      continue;
+    }
+
+    schedule.push({
+      start: event.start,
+      end: event.end,
+      summary: event.summary,
+    });
+
+    if (schedule.length >= 1000) {
+      break;
     }
   }
-  console.log("Schedule fetched:", schedule.length, "events");
+
+  console.log(
+    "Schedule fetched:",
+    schedule.length,
+    "events"
+  );
+
   return schedule;
 }
 
@@ -42,26 +71,22 @@ async function fetchAndSaveSchedule(calendarUrl, user_id) {
 }
 
 async function getScheduleFromDB(user_id) {
-    const result = await scheduleRepository.getSchedule(user_id);
-    if (!result) {
-        let newSchedule;
-        try {
-            const calendarUrl = await scheduleRepository.getScheduleUrl(user_id);
-            if (calendarUrl) {
-                newSchedule = await fetchAndSaveSchedule(calendarUrl, user_id);
-            } else {
-                console.warn('No calendar URL found for user:', user_id);
-            }
+    try {
+        const result = await scheduleRepository.getSchedule(user_id);
+
+        if (result?.length > 0) {
+            return result;
         }
-        catch (err) {
-            console.error('Error fetching schedule URL or updating schedule:', err);
-        }
-        finally {
-            return newSchedule || [];
-        }
-        
+
+        const calendarUrl = await scheduleRepository.getScheduleUrl(user_id);
+
+        if (!calendarUrl) return [];
+
+        return await fetchAndSaveSchedule(calendarUrl, user_id);
+    } catch (err) {
+        console.error('getScheduleFromDB failed:', err);
+        throw err; 
     }
-    return result;
 }
 
 const createEvent = async (data) => {

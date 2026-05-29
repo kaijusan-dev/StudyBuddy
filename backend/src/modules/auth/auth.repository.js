@@ -32,14 +32,27 @@ const findUserByEmail = async (email) => {
     return res.rows[0] || null;
 };
 
-const createUser = async ({ username, email, group_id, password }) => {
+const createUser = async ({
+  username,
+  email,
+  group_id,
+  password
+}) => {
   const res = await pool.query(
-    `INSERT INTO users (username, email, group_id, password)
-     VALUES ($1, $2, $3, $4)
-     RETURNING *`,
+    `
+    INSERT INTO users (
+      username,
+      email,
+      group_id,
+      password
+    )
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+    `,
     [username, email, group_id, password]
-  )
-  return res.rows[0]
+  );
+
+  return res.rows[0];
 };
 
 export {findUserById, findUserByTgId, findUserByUsername, findUserByEmail, createUser};

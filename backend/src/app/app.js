@@ -5,6 +5,7 @@ import {scheduleRouter} from '#schedule';
 import {authRouter, authMiddleware} from '#auth';
 import {adminRouter, adminMiddleware} from '#admin';
 import { achievementsRouter } from '#achievements';
+import { leaderboardRouter } from '#leaderboard';
 import { petRouter } from '#pet';
 import path from "path";
 import { fileURLToPath } from "url";
@@ -22,6 +23,7 @@ app.use('/api/schedule', authMiddleware, scheduleRouter);
 app.use('/api/pet', authMiddleware, petRouter);
 app.use('/api/achievements', authMiddleware, achievementsRouter); 
 app.use('/api/admin', authMiddleware, adminMiddleware, adminRouter);
+app.use('/api/leaderboard', authMiddleware, leaderboardRouter);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
