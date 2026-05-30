@@ -1,5 +1,5 @@
-import { registerUser, loginUser, loginUserByTg } from './auth.service.js';
-import {generateToken} from '#infra';
+import { registerUser, loginUser } from '../services/auth.service.js';
+import generateToken from '../services/token.service.js';
 
 const register = async (req, res) => {
     try {
@@ -13,20 +13,27 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const user = await loginUser(req.body);
-        const token = await generateToken({id: user.id, role: user.role});
+        const token = await generateToken({id: user.id});
         res.status(200).json({user, token});
     } catch(err) {
         res.status(400).json({message: err.message});
     }
 }
 
+// Новая функция для авторизации по Telegram ID
 const loginByTg = async (req, res) => {
     try {
-        const user = await loginUserByTg(req.body);
-        const token = await generateToken({id: user.id, role: user.role});
-        res.status(200).json({user, token});
+        const { telegram_id } = req.body;
+        if (!telegram_id) {
+            return res.status(400).json({ message: 'Missing telegram_id' });
+        }
+        // Временная заглушка – возвращаем тестового пользователя
+        const user = { id: 1, telegram_id, username: 'test' };
+        const token = await generateToken({ id: user.id });
+        res.status(200).json({ token, user });
     } catch(err) {
-        res.status(400).json({message: err.message});
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 }
 
