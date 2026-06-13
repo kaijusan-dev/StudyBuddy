@@ -32,7 +32,10 @@ const obtainingSchedule = async (req, res) => {
         res.status(200).json({ message: 'Schedule updated' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to update schedule' });
+
+        res.status(400).json({
+            message: err.message
+        });
     }
 }
 

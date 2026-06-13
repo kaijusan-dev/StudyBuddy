@@ -9,19 +9,17 @@
 
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 100% 100%;
+  background-size: 70% 50%;
 
   transition: transform 0.05s linear, color 0.05s linear;
 
   text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
 
   width: 100%;
-  height: auto;
 
   color: #141414;
 
   font-size: 7em;
-  padding-inline: 10%;
 }
 
 .base {

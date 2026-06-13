@@ -1,13 +1,25 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/api";
 import { isSameDay } from "../components/schedule/schedule.utils.js";
+import { useAuth } from "./AuthContext.jsx";
 
 const ScheduleContext = createContext();
 
 export const ScheduleProvider = ({ children }) => {
 
+    const { user } = useAuth();
     const [schedule, setSchedule] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!user) {
+            setSchedule([]);
+            setLoading(false);
+            return;
+        }
+
+        fetchSchedule();
+    }, [user]);
 
     const fetchSchedule = async () => {
         setLoading(true);
@@ -27,10 +39,6 @@ export const ScheduleProvider = ({ children }) => {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchSchedule();
-    }, []);
 
     const createEvent = async (payload) => {
         const res = await api.post(`/admin/schedule`, payload);

@@ -62,11 +62,25 @@ async function fetchSchedule(calendarUrl) {
 async function fetchAndSaveSchedule(calendarUrl, user_id) {
     try {
         const schedule = await fetchSchedule(calendarUrl);
+
+        if (schedule.length === 0) {
+            throw new Error("Неверная Ссылка ЕТИС");
+        }
+
         await updateUser(user_id, { calendar_url: calendarUrl });
-        return await scheduleRepository.saveSchedule(schedule, user_id);
+
+        return await scheduleRepository.saveSchedule(
+            schedule,
+            user_id
+        );
     }
     catch (err) {
-        console.error('Error fetching or saving schedule:', err);
+        console.error(
+            'Error fetching or saving schedule:',
+            err
+        );
+
+        throw err;
     }
 }
 

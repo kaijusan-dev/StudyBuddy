@@ -72,8 +72,10 @@ import "../components/pet/Pet.css";
     }
 
     const {schedule, setSchedule, fetchSchedule, loading } = useSchedule();
-    
+
     const hasSchedule = !loading && schedule.length > 0;
+
+    console.log(loading, hasSchedule);
 
     const {pet} = usePet();
 
@@ -95,6 +97,7 @@ import "../components/pet/Pet.css";
               setState={setState} 
               errors={errors} 
               handleSubmit={handleSubmit}
+              handleCloseModal={handleCloseModal}
             />
           </Modal>
         )
