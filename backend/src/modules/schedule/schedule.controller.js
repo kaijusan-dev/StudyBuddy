@@ -14,6 +14,16 @@ const getSchedule = async (req, res) => {
     }
 };
 
+const getTodaySchedule = async (req, res) => {
+    try {
+        const lessons = await scheduleService.getTodayLessons(req.user.id);
+        res.json({ lessons });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to get schedule' });
+    }
+};
+
 const completeEvent = async (req, res) => {
     const { id } = req.params;
 
@@ -22,30 +32,11 @@ const completeEvent = async (req, res) => {
             completed: true
         });
 
-        // const pet = await petService.getPet(req.user.id);
-
-        // const resultPet = petService.applyLessonReward(pet);
-
-        // await petService.savePet(req.user.id, resultPet);
-
         const pet = await petService.getPet(req.user.id);
-        console.log('=== BEFORE LESSON ===', {
-        fullness: pet.fullness,
-        energy: pet.energy,
-        coins: pet.coins,
-        xp: pet.xp
-        });
 
         const resultPet = petService.applyLessonReward(pet);
-        console.log('=== AFTER LESSON (before save) ===', {
-        fullness: resultPet.fullness,
-        energy: resultPet.energy,
-        coins: resultPet.coins,
-        xp: resultPet.xp
-        });
 
         await petService.savePet(req.user.id, resultPet);
-        console.log('=== SAVED ===');
 
         updateActivePet(req.user.id, resultPet);
 
@@ -77,4 +68,4 @@ const obtainingSchedule = async (req, res) => {
     }
 }
 
-export { getSchedule, completeEvent, obtainingSchedule };
+export { getSchedule, completeEvent, obtainingSchedule, getTodaySchedule };

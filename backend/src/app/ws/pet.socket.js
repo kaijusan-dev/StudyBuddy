@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { evaluateAchievements } from "#achievements";
 
 export const activePets = new Map();
-const clients = new Map();
+export const clients = new Map();
 
 export const updateActivePet = (userId, pet) => {
   if (activePets.has(userId)) {
@@ -12,7 +12,7 @@ export const updateActivePet = (userId, pet) => {
   }
 };
 
-const handlePetUpdate = async (userId, pet, ws, animation) => {
+export const handlePetUpdate = async (userId, pet, ws, animation) => {
   const updated = petService.calculatePetState(pet);
 
   activePets.set(userId, updated);
@@ -125,7 +125,7 @@ export const createPetSocket = (server) => {
 
           //действия с питомцем
           if (data.action) {
-            const acted = petService.applyAction(currentPet, data.action);
+            const acted = await petService.applyAction(userId, data.action, data.animation);
             await handlePetUpdate(userId, acted, ws, data.animation);
           }
         } catch (err) {

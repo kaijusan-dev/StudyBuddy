@@ -147,5 +147,25 @@ const deleteEvent = async (id, userId) => {
   return deleted;
 };
 
+const getTodayLessons = async (userId) => {
+  const schedule = await getScheduleFromDB(userId);
+  
+  if (!schedule || schedule.length === 0) return [];
 
-export { getScheduleFromDB, fetchAndSaveSchedule, createEvent, updateEvent, deleteEvent };
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
+
+  const todayEvents = schedule.filter(event => {
+    const eventDate = new Date(event.start_time || event.start);
+    return eventDate.toISOString().slice(0, 10) === todayStr;
+  });
+
+  // Формат
+  return todayEvents.map(event => ({
+    time: new Date(event.start_time || event.start).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+    name: event.summary || event.title || 'Без названия',
+    place: event.location || event.place || ''
+  }));
+};
+
+export { getScheduleFromDB, fetchAndSaveSchedule, createEvent, updateEvent, deleteEvent, getTodayLessons };

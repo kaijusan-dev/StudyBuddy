@@ -1,7 +1,7 @@
 import * as petRepository from "./pet.repository.js";
 import { findUserById } from "#auth";
 import { PET_BALANCE } from "./pet.balance.js";
-import { activePets } from "#app";
+import { activePets, clients, handlePetUpdate } from "#app";
 
 const clampStat = (key, value) => {
   const maxMap = {
@@ -102,64 +102,78 @@ export const getPet = async (userId) => {
   return calculatePetState(pet);
 };
 
-export const updatePet = async (userId, pet, field, value) => {
-
-  const currentPet = await calculatePetState(pet);
-
-  return await petRepository.updatePet(userId, {
-    ...currentPet,
-    [field]: value,
-    last_updated: new Date(),
-  });
+export const updatePet = async (userId, field, value) => {
+  let pet = await getPet(userId);
+  pet = { ...pet, [field]: value, last_updated: new Date() };
+  const updated = calculatePetState(pet);
+  await petRepository.updatePet(userId, updated);
+  if (activePets.has(userId)) {
+    activePets.set(userId, updated);
+    const ws = clients.get(userId);
+    if (ws) await handlePetUpdate(userId, updated, ws, "idle");
+  }
+  return updated;
 };
 
 export const savePet = async (userId, pet) => {
   return await petRepository.updatePet(userId, pet);
 };
 
-export const applyAction = (pet, action) => {
+// Применяет действие (FEED, PLAY, CARESS) и синхронизирует с WebSocket
+export const applyAction = async (userId, action, animation) => {
+  let pet = activePets.get(userId);
+  if (!pet) pet = await getPet(userId);
+  const updated = applyActionLogic(pet, action);
+  const ws = clients.get(userId);
+  await handlePetUpdate(userId, updated, ws, animation);
+  return updated;
+};
+
+// Чистая функция применения действия
+const applyActionLogic = (pet, action) => {
   const config = PET_BALANCE.ACTIONS[action];
   if (!config) return pet;
 
   const base = calculatePetState(pet);
-
   let coinsDelta = 0;
+  let energyDelta = config.energy || 0;
+  let happinessDelta = config.happiness || 0;
+  let fullnessDelta = config.fullness || 0;
+  let xpDelta = config.xp || 0;
 
   if (action === "FEED") {
-    if (base.fullness >= 20) {
-      throw new Error("Питомец не голоден!");
-    }
-
-    const cost =
-      base.fullness <= 9
-        ? PET_BALANCE.COINS.FEED_HUNGRY_COST
-        : PET_BALANCE.COINS.FEED_NORMAL_COST;
-
-    if (base.coins < cost) {
-      throw new Error("Не хватает монет!");
-    }
-
+    if (base.fullness >= 20) throw new Error("Питомец не голоден!");
+    const cost = base.fullness <= 9 ? PET_BALANCE.COINS.FEED_HUNGRY_COST : PET_BALANCE.COINS.FEED_NORMAL_COST;
+    if (base.coins < cost) throw new Error("Не хватает монет!");
     coinsDelta = -cost;
   }
 
+  if (energyDelta < 0 && base.energy + energyDelta < 0) throw new Error("Недостаточно энергии!");
+
   const result = { ...base };
+  result.fullness = clampStat("fullness", base.fullness + fullnessDelta);
+  result.happiness = clampStat("happiness", base.happiness + happinessDelta);
+  result.energy = clampStat("energy", base.energy + energyDelta);
+  result.xp = clampStat("xp", (base.xp || 0) + xpDelta);
+  result.coins = clampStat("coins", (base.coins || 0) + coinsDelta);
+  if (config.feed_count) result.feed_count = (result.feed_count || 0) + config.feed_count;
+  result.last_updated = new Date();
+  return result;
+};
 
-  for (const key in config) {
-    const current = result[key] ?? 0;
-    const delta = config[key];
+// Обёртки для конкретных действий (для удобства)
+export const feedPet = (userId) => applyAction(userId, "FEED", "eat");
+export const playWithPet = (userId) => applyAction(userId, "PLAY", "play");
+export const caressPet = (userId) => applyAction(userId, "CARESS", "caress");
 
-    result[key] = clampStat(key, current + delta);
+export const deletePet = async (userId) => {
+  const ws = clients.get(userId);
+  if (ws) {
+    ws.close();
+    clients.delete(userId);
+    activePets.delete(userId);
   }
-
-  result.coins = clampStat(
-    "coins",
-    (result.coins ?? 0) + coinsDelta
-  );
-
-  return {
-    ...result,
-    last_updated: new Date(),
-  };
+  await petRepository.deletePetByUserId(userId);
 };
 
 export const applyLessonReward = (pet) => {

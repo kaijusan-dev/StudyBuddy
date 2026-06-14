@@ -48,4 +48,9 @@ const createPet = async (user_id) => {
   return res.rows[0]
 };
 
-export {findPetByUserId, updatePet, createPet};
+const deletePetByUserId = async (user_id) => {
+    const res = await pool.query(`DELETE FROM pets WHERE user_id = $1 RETURNING *`, [user_id]);
+    return res.rowCount > 0;
+};
+
+export {findPetByUserId, updatePet, createPet, deletePetByUserId };
