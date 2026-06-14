@@ -1,0 +1,55 @@
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  font-size: 5em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.card {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.title {
+  font-size: 3em;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 2em;
+}
+
+.progress {
+  width: 100%;
+}
+
+.done {
+  color: #4caf50;
+  font-weight: 500;
+}

@@ -1,0 +1,125 @@
+.container { 
+  font-size: 3em;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  align-self: center;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+/* таблицы */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.header {
+  display: grid;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 0.8em;
+  color: #777;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.row {
+  display: grid;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.row:hover {
+  background: #f1f1f1;
+}
+
+/* роли */
+.admin {
+  color: #fff;
+  background: #000;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 1em;
+  width: fit-content;
+}
+
+.user {
+  color: #333;
+  background: #e5e5e5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 1em;
+  width: fit-content;
+}
+
+/* кнопки */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.button:hover {
+  background: #ccc;
+}
+
+.delete {
+  background: #ff4d4d;
+  color: white;
+}
+
+.delete:hover {
+  background: #e60000;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* карточки */
+.card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+/* progress */
+.progress {
+  width: 220px;
+  height: 10px;
+}
+
+/* debug blocks */
+.pre {
+  background: #111;
+  color: #0f0;
+  padding: 12px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.usersGrid {
+  grid-template-columns: 60px 1fr 80px 100px 160px;
+}
+
+.statControls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}

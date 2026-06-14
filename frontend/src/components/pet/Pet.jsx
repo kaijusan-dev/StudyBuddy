@@ -1,18 +1,31 @@
 import PetActions from "./PetActions";
-import PetStatus from "./PetStatus";
 import PetAvatar from "./PetAvatar";
-import "./Pet.css";
+import PetBackground from "./PetBackground";
 import { usePet } from "../../context/PetSocketContext";
+import './Pet.css'
 
 export default function Pet() {
-    const { pet } = usePet();
-    if (!pet) return;
-    return (
-        <div className="Pet">
-            <h1>Your Pet</h1>
-            <PetStatus/>
-            <PetAvatar/>
-            <PetActions/>  
-        </div>
-    )
+
+  const { pet, error } = usePet();
+
+  if (!pet) return <div>Loading pet...</div>;
+
+  return (
+    <div className="pet-layout">
+
+      <div className="pet-area">
+
+        {error && (
+          <div className="pet-error">
+            {error}
+          </div>
+        )}
+
+        <PetBackground />
+        <PetAvatar />
+        <PetActions />
+      </div>
+
+    </div>
+  );
 }

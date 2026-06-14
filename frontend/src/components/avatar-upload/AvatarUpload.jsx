@@ -1,12 +1,13 @@
 import { useRef } from "react";
 import api from "../../api/api";
 import Avatar from "../avatar/Avatar";
+import styles from "./AvatarUpload.module.css";
 
 export default function AvatarUpload({ user, onUpload }) {
   const fileInputRef = useRef(null);
 
   const handleClick = () => {
-    fileInputRef.current.click(); // имитируем клик на input
+    fileInputRef.current.click();
   };
 
   const handleChange = async (e) => {
@@ -27,18 +28,20 @@ export default function AvatarUpload({ user, onUpload }) {
   };
 
   return (
-    <div className="AvatarUpload">
+    <div className={styles.wrapper} onClick={handleClick}>
+      <Avatar avatar={user?.avatar} />
 
-      <Avatar avatar={user?.avatar} onClick={handleClick}/>
+      <div className={styles.overlay}>
+        <span className={styles.upload}>🡇</span>
+      </div>
 
       <input
         type="file"
         ref={fileInputRef}
-        style={{ display: "none" }}
+        className={styles.input}
         accept="image/*"
         onChange={handleChange}
       />
     </div>
   );
 }
-

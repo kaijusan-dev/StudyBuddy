@@ -1,4 +1,6 @@
 *.env
-./node_modules
-./frontend/node_modules
-./backend/node_modules
+node_modules/
+uploads/
+.vscode
+.VSCodeCounter
+package-lock.json

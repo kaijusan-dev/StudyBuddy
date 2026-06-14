@@ -12,6 +12,35 @@ export function usePetSocket(token) {
   const shouldReconnectRef = useRef(true);
   const reconnectAttemptsRef = useRef(0);
 
+  const [animation, setAnimation] = useState(null);
+  const animationTimeoutRef = useRef(null);
+
+  const [error, setError] = useState(null);
+
+  const triggerAnimation = (name) => {
+
+    // очищаем предыдущий таймер
+    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+    
+    setAnimation(name);
+    
+    // длительность анимации в мс
+    const durations = { feed: 3000, caress: 3000, play: 5000 };
+    const duration = durations[name] || 2500;
+    
+    animationTimeoutRef.current = setTimeout(() => {
+      setAnimation(null);
+    }, duration);
+  };
+
+  const showPetError = (message) => {
+    setError(message);
+
+    setTimeout(() => {
+      setError(null);
+    }, 2500);
+  };
+
   useEffect(() => {
     if (loading || !token) return;
 
@@ -57,12 +86,24 @@ export function usePetSocket(token) {
             return;
           }
 
-          if (data.type === "pet_state" || data.type === "pet_update") {
-            setPet({
-              ...data.pet,
-              last_updated: new Date(),
-            });
+          if (data.type === "error") {
+            showPetError(data.message);
+            return;
           }
+
+          if (data.type === "pet_state" || data.type === "pet_update") {
+            setPet(data.pet);
+          }
+
+          if (data.animation) {
+            triggerAnimation(data.animation);
+          }
+
+          //здесь должна быть логика показа достижения как уведомления
+          // if (data.type === "achievements_unlocked") {
+          //   showModal(data.achievements);
+          // }
+
         } catch (err) {
           console.error("WS parse error", err);
         }
@@ -83,7 +124,7 @@ export function usePetSocket(token) {
 
         reconnectAttemptsRef.current += 1;
 
-        const delay = Math.min(2000 * reconnectAttemptsRef.current, 15000);
+        const delay = Math.min(1000 * reconnectAttemptsRef.current, 15000);
 
         console.log(`WS Reconnect in ${delay}ms`);
 
@@ -102,20 +143,32 @@ export function usePetSocket(token) {
       if (socketRef.current) {
         socketRef.current.close();
       }
-    };
+    };  
   }, [token, loading]);
 
-  const sendAction = (action) => {
+  const sendAction = (action, animation) => {
+    socketRef.current.send(JSON.stringify({ action, animation }));
+  };
+
+  const updateStat = (field, value) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({ action }));
+      socketRef.current.send(
+        JSON.stringify({ action: "update", field, value })
+      );
     } else {
       console.warn("WS not ready");
     }
   };
 
   return {
+    socketRef,
+    animation,  
     pet,
+    error,
     setPet,
-    feedPet: () => sendAction("feed"),
+    updateStat, 
+    feedPet: () => sendAction("FEED", "feed"),
+    caressPet: () => sendAction("CARESS", "caress"),
+    playPet: () => sendAction("PLAY", "play"),
   };
 }

@@ -1,27 +1,86 @@
-import { useEffect } from "react";
 import { usePet } from "../../context/PetSocketContext";
+import StatBar from "./bar/StatBar";
+import './Pet.css'
 
 export default function PetStatus() {
-  const { pet, setPet } = usePet();
-  
-  useEffect(() => {
-    if (!pet) return;
-    
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const diffSec = (now - new Date(pet.last_updated).getTime()) / 1000;
-      const newFullness = Math.max(0, pet.fullness - diffSec * 0.1);
-      setPet({...pet, fullness: newFullness});
-    }, 1000)
+  const { pet } = usePet();
 
-    return () => clearInterval(interval);
-  }, [pet]);
+  if (!pet) return null;
+
+  const MAX = {
+    fullness: 30,
+    energy: 100,
+    happiness: 100,
+  };
+
+  const normalize = (value, max) => {
+    if (!max) return 0;
+    return (value / max) * 100;
+  };
+
+  const format = (value) => Math.round(value * 10) / 10;
 
   return (
-    <div>
-      <p>Fullness: <progress value={pet.fullness} max="100" /></p>
-      <p>Energy: <progress value={pet.energy} max="100" /></p>
-      <p>Happiness: <progress value={pet.happiness} max="100" /></p>
+    <div className="pet-status">
+
+      <h3 className='title'>Состояние</h3>       
+
+      <div className='stat coin'>
+        <img src="/assets/coin-icon.png" />
+
+        <span className='coin-text'>
+          Монеты {pet.coins ?? 0}
+        </span>
+      </div>
+
+      <div className='stat xp'>
+        <img src="/assets/xp-icon.png" />
+
+        <span className='xp-text'>
+          Опыт {pet.xp ?? 0}
+        </span>
+      </div>
+
+      <div className='stat'>
+        <img src="/assets/bar/food-icon.png" />
+
+        <StatBar
+          value={normalize(pet.fullness ?? 0, MAX.fullness)}
+          type="food-bar"
+        />
+
+        <span className='stat-text'>
+          Еда {format(pet.fullness ?? 0)}/{MAX.fullness}
+        </span>
+
+      </div>
+
+      <div className='stat'>
+        <img src="/assets/bar/energy-icon.png" />
+
+        <StatBar
+          value={normalize(pet.energy ?? 0, MAX.energy)}
+          type="energy-bar"
+        />
+
+        <span className='stat-text'>
+          Энергия {format(pet.energy ?? 0)}/{MAX.energy}
+        </span>
+
+      </div>
+
+      <div className='stat'>
+        <img src="/assets/bar/happiness-icon.png" />
+
+        <StatBar
+          value={normalize(pet.happiness ?? 0, MAX.happiness)}
+          type="happiness-bar"
+        />
+
+        <span className='stat-text'>
+          Счастье {format(pet.happiness ?? 0)}/{MAX.happiness}
+        </span>
+      </div>
     </div>
   );
 }

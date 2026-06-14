@@ -1,47 +1,358 @@
+.pet-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  min-height: 0;
+  gap: 16px;
+}
+
+.pet-error {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  background: #bcbcfc;
+  color: #000000;
+
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  font-size: 3em;
+  font-family: 'Thin Pixel', monospace;
+
+  z-index: 10;
+
+  animation: petErrorFade 2.5s ease forwards;
+}
+
+.pet-status {
+  display: flex;
+  flex-direction: column;
+  background-color: #fcf4ce;
+  border: 4px solid #bcbcfc;
+
+  flex-shrink: 0;
+
+  width: 100%;
+  padding: 12px;
+
+}
+
+.pet-actions {
+  position: absolute;
+
+  bottom: -15%;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  gap: 2%;
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  z-index: 5;
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 30%;
+
+  padding: 4px;
+  gap: 4px;
+
+  border-radius: 10px;
+
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.action:hover {
+  background-color: rgba(188, 188, 252, 0.18);
+  transform: translateY(-2px);
+}
+
+.action:active {
+  transform: translateY(2px);
+}
+
+.action img {
+  width: 100%;
+  height: auto;
+
+  image-rendering: pixelated;
+
+  filter: drop-shadow(0 2px 0 rgba(6, 173, 250, 0.15));
+}
+
+.action button {
+  width: 100%;
+  font-size: clamp(3rem, 3vw, 6rem);
+}
+
+.pet-area {
+  position: relative;
+
+  width: clamp(320px, 40vw, 600px);
+  aspect-ratio: 1 / 1;
+
+  overflow: visible;
+
+  flex-shrink: 0;
+}
+
+.pet-background {
+  position: absolute;
+  inset: 0;
+
+  background-image: url('/assets/pet-area-background.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
 .pet-avatar {
-  font-size: 80px;
-  transition: transform 0.3s ease;
+  position: absolute;
+
+  left: 50%;
+
+  transform: translate(-50%, -5%);
+
+  width: clamp(120px, 70%, 460px);
+  height: clamp(120px, 70%, 400px);
+
+  aspect-ratio: 1 / 1;
+
+  z-index: 2;
+
+  image-rendering: pixelated;
+
+  background-repeat: no-repeat;
+  background-position: 0 0;
 }
 
-/* Idle — лёгкое дыхание */
-.pet-avatar.idle {
-  animation: idle-bounce 2s infinite;
+.title {
+  text-align: center;
+
+  font-family: 'Thin Pixel', monospace;
+
+  font-size: calc(2.5rem * var(--ui-scale));
+
+  text-shadow:
+    3px 3px 0 #5c64c4,   
+    0 0 0 #5c64c4;
+
+  margin: 0;
 }
 
-@keyframes idle-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+.stat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
-/* Happy — прыгает */
-.pet-avatar.happy {
-  animation: happy-jump 0.6s infinite;
+.stat-text {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 40px;
+  transform: translate(80%, -35%);
+  position: absolute;
+  width: 70px;
 }
 
-@keyframes happy-jump {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+.stat > div {
+  flex: 1;
+  min-width: 0;
 }
 
-/* Sleep — плавное покачивание */
-.pet-avatar.sleep {
-  animation: sleep 3s infinite;
-  opacity: 0.7;
+.stat img {
+  width: clamp(28px, 3vw, 40px);
+  height: clamp(28px, 3vw, 40px);
+  flex-shrink: 0;
 }
 
-@keyframes sleep {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(5deg); }
+.stat.xp {
+  margin-bottom: 10px;
 }
 
-/* Angry — тряска */
-.pet-avatar.angry {
-  animation: shake 0.3s infinite;
+.coin-text, .xp-text {
+  font-size: 40px;
+  font-family: 'Thin Pixel', monospace;
+  white-space: nowrap;
 }
 
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-  100% { transform: translateX(0); }
+
+
+.idle {
+  background-image: url("/pet/idle.png");
+  background-size: 1200% 100%;
+
+  animation: idle 2.5s steps(12) infinite;
+}
+
+.happy {
+  background-image: url("/pet/happy.png");
+  background-size: 1800% 100%;
+
+  animation: happy 2.5s steps(18) infinite;
+}
+
+.angry {
+  background-image: url("/pet/angry.png");
+  background-size: 800% 100%;
+
+  animation: angry 2.5s steps(8) infinite;
+}
+
+.hungry {
+  background-image: url("/pet/hungry.png");
+  background-size: 1000% 100%;
+
+  animation: hungry 2.5s steps(10) infinite;
+}
+
+.feed {
+  background-image: url("/assets/actions/feed-action.png");
+  background-size: 1100% 100%;
+  background-repeat: no-repeat;
+  animation: feed 3s steps(11) 1;
+}
+
+@keyframes feed {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 110% 0;
+  }
+}
+
+.sleepy {
+  background-image: url("/pet/sleepy.png");
+  background-size: 400% 100%;
+  background-repeat: no-repeat;
+  animation: sleepy 5s steps(4) infinite;
+}
+
+@keyframes sleepy {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 133.33% 0;
+  }
+}
+
+.caress {
+  background-image: url("/assets/actions/caress-action.png");
+  background-size: 900% 100%;
+
+  animation: caress 3s steps(9) 1;
+}
+
+.play {
+  background-image: url("/assets/actions/play-action.png");
+  background-size: 2000% 100%;
+
+  animation: play 5s steps(20) 1;
+}
+
+@keyframes idle {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 109.09%;
+  }
+}
+
+@keyframes happy {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 105.88%;
+  }
+}
+
+@keyframes angry {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 114.28%;
+  }
+}
+
+@keyframes hungry {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 111.111%;
+  }
+}
+
+@keyframes caress {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 112.5%;
+  }
+}
+
+@keyframes play {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: 105.26%;
+  }
+}
+
+@keyframes petErrorFade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+}
+
+@media (max-width: 600px) {
+  .stat {
+    gap: 8px;
+  }
+
+  .stat-text {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .pet-actions {
+    gap: 8px;
+    padding: 10px;
+    flex-wrap: wrap;
+
+    transform: translateY(-25%);
+  }
+
+  .action {
+    min-width: 72px;
+  }
 }

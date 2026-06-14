@@ -15,8 +15,9 @@ services:
     depends_on:
       - db
     volumes:
-       - ./backend:/app
-       - uploads_data:/app/uploads
+      - ./backend:/app
+      - uploads_data:/app/uploads
+      - /app/node_modules
 
   frontend:
     build: 
