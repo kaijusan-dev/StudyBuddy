@@ -12,7 +12,6 @@ export default function Navbar() {
             </Link>
 
             <div className={styles.Links}>
-                <Link to={'/'}>Главная</Link>
                 {!user && 
                     <>
                         <Link to={'/auth/register'}>Регистрация</Link>

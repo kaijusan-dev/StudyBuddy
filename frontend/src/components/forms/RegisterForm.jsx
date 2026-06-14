@@ -32,7 +32,7 @@ export default function RegisterForm({state, setState, handleSubmit, errors}) {
                     <Input name = 'passwordAgain' label= 'Повторите пароль' type='password' state={state} setState={setState}/>
                     {errors.passwordAgain && <Error message={errors.passwordAgain} />}
 
-                    <Button type="submit" variant='register'>Отправить</Button>
+                    <button>Отправить</button>
                 </form> 
             </div>
         </div>

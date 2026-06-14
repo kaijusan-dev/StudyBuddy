@@ -24,7 +24,7 @@ export default function LoginForm({state, setState, handleSubmit, errors}) {
                     <Input name = 'password' label= 'Пароль' type='password' state={state} setState={setState}/>
                     {errors.password && <Error message={errors.password} />}
 
-                    <Button type="submit" variant='enter'>Войти</Button>
+                    <button>Войти</button>
                 </form> 
             </div>
         </div>
