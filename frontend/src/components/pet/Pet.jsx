@@ -6,7 +6,7 @@ import './Pet.css'
 
 export default function Pet() {
 
-  const { pet } = usePet();
+  const { pet, error } = usePet();
 
   if (!pet) return <div>Loading pet...</div>;
 
@@ -14,6 +14,13 @@ export default function Pet() {
     <div className="pet-layout">
 
       <div className="pet-area">
+
+        {error && (
+          <div className="pet-error">
+            {error}
+          </div>
+        )}
+
         <PetBackground />
         <PetAvatar />
         <PetActions />

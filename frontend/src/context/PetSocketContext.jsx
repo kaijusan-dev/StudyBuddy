@@ -7,10 +7,10 @@ export function PetSocketProvider({ children }) {
 
   const token = localStorage.getItem('token');
 
-  const { socketRef, pet, setPet, updateStat, feedPet } = usePetSocket(token);
+  const { socketRef, animation, pet, error, setPet, updateStat, feedPet, caressPet, playPet } = usePetSocket(token);
 
   return (
-    <PetSocketContext.Provider value={{ socketRef, pet, setPet, updateStat, feedPet }}>
+    <PetSocketContext.Provider value={{ socketRef, animation, pet, error, setPet, updateStat, feedPet, caressPet, playPet }}>
       {children}
     </PetSocketContext.Provider>
   );

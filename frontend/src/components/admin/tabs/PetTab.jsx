@@ -6,7 +6,7 @@ export default function PetTab() {
 
   if (!pet) return null;
 
-  const stats = ["fullness", "energy", "happiness", "xp", "feed_count"];
+  const stats = ["fullness", "energy", "happiness", "xp", "feed_count", "coins"];
 
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
@@ -16,6 +16,7 @@ export default function PetTab() {
     happiness: 100,
     xp: 1000000,
     feed_count: 1000000,
+    coins: 1000000,
   };
 
   const change = (field, delta) => {

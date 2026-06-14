@@ -12,6 +12,35 @@ export function usePetSocket(token) {
   const shouldReconnectRef = useRef(true);
   const reconnectAttemptsRef = useRef(0);
 
+  const [animation, setAnimation] = useState(null);
+  const animationTimeoutRef = useRef(null);
+
+  const [error, setError] = useState(null);
+
+  const triggerAnimation = (name) => {
+
+    // очищаем предыдущий таймер
+    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+    
+    setAnimation(name);
+    
+    // длительность анимации в мс
+    const durations = { feed: 3000, caress: 3000, play: 5000 };
+    const duration = durations[name] || 2500;
+    
+    animationTimeoutRef.current = setTimeout(() => {
+      setAnimation(null);
+    }, duration);
+  };
+
+  const showPetError = (message) => {
+    setError(message);
+
+    setTimeout(() => {
+      setError(null);
+    }, 2500);
+  };
+
   useEffect(() => {
     if (loading || !token) return;
 
@@ -57,10 +86,17 @@ export function usePetSocket(token) {
             return;
           }
 
+          if (data.type === "error") {
+            showPetError(data.message);
+            return;
+          }
+
           if (data.type === "pet_state" || data.type === "pet_update") {
-            if (data.pet) {
-              setPet(data.pet);
-            }
+            setPet(data.pet);
+          }
+
+          if (data.animation) {
+            triggerAnimation(data.animation);
           }
 
           //здесь должна быть логика показа достижения как уведомления
@@ -110,12 +146,8 @@ export function usePetSocket(token) {
     };  
   }, [token, loading]);
 
-  const sendAction = (action) => {
-    if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({ action }));
-    } else {
-      console.warn("WS not ready");
-    }
+  const sendAction = (action, animation) => {
+    socketRef.current.send(JSON.stringify({ action, animation }));
   };
 
   const updateStat = (field, value) => {
@@ -130,9 +162,13 @@ export function usePetSocket(token) {
 
   return {
     socketRef,
+    animation,  
     pet,
+    error,
     setPet,
-    updateStat,
-    feedPet: () => sendAction("FEED"),
+    updateStat, 
+    feedPet: () => sendAction("FEED", "feed"),
+    caressPet: () => sendAction("CARESS", "caress"),
+    playPet: () => sendAction("PLAY", "play"),
   };
 }

@@ -17,7 +17,7 @@ export const PET_BALANCE = {
 
   ENERGY: {
     MAX: 100,
-    PER_LEVEL_BONUS: 1,
+    PER_LEVEL_BONUS: 0.02,
     RECOVERY_PER_HOUR: 2,
     NIGHT_RECOVERY_PER_HOUR: 4,
     MIN_FOR_GAME: 5,
@@ -29,6 +29,7 @@ export const PET_BALANCE = {
   HAPPINESS: {
     MAX: 100,
     PER_LEVEL_BONUS_PERCENT: 0.01,
+    DECAY_PER_DAY: 2,
   },
 
   XP: {
@@ -45,34 +46,28 @@ export const PET_BALANCE = {
     STREAK_3_0: 3,
     DAILY: 1,
     EXTRA_LESSON: 1,
-    BACKGROUND_SIMPLE: 300,
-    BACKGROUND_PREMIUM: 700,
-    HEAL: 200,
+
+    FEED_NORMAL_COST: 5,
+    FEED_HUNGRY_COST: 10,
   },
 
   ACTIONS: {
     FEED: {
       fullness: 10,
-      energy: 5,
       xp: 3,
       feed_count: 1
+    },
+
+    CARESS: {
+      happiness: 5,
+      energy: -5,
+      xp: 2,
     },
 
     PLAY: {
       energy: -10,
       happiness: 15,
-      xp: 5,
-    },
-
-    REST: {
-      energy: 20,
-      happiness: 2,
-    },
-
-    STUDY: {
-      energy: -15,
-      xp: 15,
-      fullness: -2,
+      xp: 3,
     },
   },
 };

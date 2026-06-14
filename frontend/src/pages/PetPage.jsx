@@ -75,8 +75,6 @@ import "../components/pet/Pet.css";
 
     const hasSchedule = !loading && schedule.length > 0;
 
-    console.log(loading, hasSchedule);
-
     const {pet} = usePet();
 
     const [openModal, setOpenModal] = useState(null);

@@ -82,6 +82,7 @@ async function initializePetsTable() {
           energy INTEGER DEFAULT 100,
           xp INTEGER DEFAULT 0,
           level INTEGER NOT NULL DEFAULT 1,
+          coins INTEGER NOT NULL DEFAULT 0,
           last_updated TIMESTAMPTZ DEFAULT NOW(),
           feed_count INTEGER DEFAULT 0
       );

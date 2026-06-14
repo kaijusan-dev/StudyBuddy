@@ -25,6 +25,22 @@ export default function PetStatus() {
 
       <h3 className='title'>Состояние</h3>       
 
+      <div className='stat coin'>
+        <img src="/assets/coin-icon.png" />
+
+        <span className='coin-text'>
+          Монеты {pet.coins ?? 0}
+        </span>
+      </div>
+
+      <div className='stat xp'>
+        <img src="/assets/xp-icon.png" />
+
+        <span className='xp-text'>
+          Опыт {pet.xp ?? 0}
+        </span>
+      </div>
+
       <div className='stat'>
         <img src="/assets/bar/food-icon.png" />
 
@@ -34,7 +50,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {format(pet.fullness ?? 0)}/{MAX.fullness}
+          Еда {format(pet.fullness ?? 0)}/{MAX.fullness}
         </span>
 
       </div>
@@ -48,7 +64,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {format(pet.energy ?? 0)}/{MAX.energy}
+          Энергия {format(pet.energy ?? 0)}/{MAX.energy}
         </span>
 
       </div>
@@ -62,7 +78,7 @@ export default function PetStatus() {
         />
 
         <span className='stat-text'>
-          {format(pet.happiness ?? 0)}/{MAX.happiness}
+          Счастье {format(pet.happiness ?? 0)}/{MAX.happiness}
         </span>
       </div>
     </div>
