@@ -29,6 +29,34 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backup:
+    image: postgres:latest
+    container_name: studybuddy_backup
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./backups:/backups
+    command: >
+      sh -c "
+        until pg_isready -h db -U $$POSTGRES_USER; do
+          sleep 2;
+        done;
+
+        while true; do
+          pg_dump \
+            -h db \
+            -U $$POSTGRES_USER \
+            $$POSTGRES_DB \
+            > /backups/studybuddy-$$(date +%Y-%m-%d_%H-%M-%S).sql;
+
+          find /backups -name '*.sql' -mtime +7 -delete;
+
+          sleep 86400;
+        done
+      "
 volumes:
   postgres_data:
   uploads_data:
