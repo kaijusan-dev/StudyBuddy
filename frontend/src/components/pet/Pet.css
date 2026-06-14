@@ -190,7 +190,32 @@
   white-space: nowrap;
 }
 
+/* Горизонтальная панель с монетами, опытом, уровнем */
+.top-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 
+.top-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(1rem, 4vw, 2rem);
+  font-family: 'Thin Pixel', monospace;
+  padding: 6px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.top-stat img {
+  width: clamp(24px, 5vw, 36px);
+  height: clamp(24px, 5vw, 36px);
+  image-rendering: pixelated;
+}
 
 .idle {
   background-image: url("/pet/idle.png");
@@ -333,6 +358,21 @@
   100% { opacity: 0; transform: translateX(-50%) translateY(-5px); }
 }
 
+/* Адаптив для маленьких экранов */
+@media (max-width: 500px) {
+  .top-stats {
+    gap: 8px;
+  }
+  .top-stat {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+  .top-stat img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 @media (max-width: 600px) {
   .stat {
     gap: 8px;
@@ -356,3 +396,4 @@
     min-width: 72px;
   }
 }
+

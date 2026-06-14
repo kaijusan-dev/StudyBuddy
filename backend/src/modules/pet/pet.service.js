@@ -45,6 +45,24 @@ const calculateEnergyRecovery = (lastDate, nowDate) => {
   return total;
 };
 
+const calculateLevel = (xp) => {
+  let level = 1;
+  let totalXp = 0;
+
+  while (true) {
+    const xpForNextLevel = Math.round(
+      100 * Math.pow(1.25, level - 1)
+    );
+
+    if (xp < totalXp + xpForNextLevel) {
+      return level;
+    }
+
+    totalXp += xpForNextLevel;
+    level++;
+  }
+};
+
 export const calculatePetState = (pet) => {
   const now = new Date();
   const lastUpdated = new Date(pet.last_updated);
@@ -76,6 +94,7 @@ export const calculatePetState = (pet) => {
 
   return {
     ...pet,
+    level: calculateLevel(pet.xp || 0),
     fullness: newFullness,
     energy: newEnergy,
     happiness: newHappiness,
@@ -155,6 +174,7 @@ const applyActionLogic = (pet, action) => {
   result.happiness = clampStat("happiness", base.happiness + happinessDelta);
   result.energy = clampStat("energy", base.energy + energyDelta);
   result.xp = clampStat("xp", (base.xp || 0) + xpDelta);
+  result.level = calculateLevel(result.xp);
   result.coins = clampStat("coins", (base.coins || 0) + coinsDelta);
   if (config.feed_count) result.feed_count = (result.feed_count || 0) + config.feed_count;
   result.last_updated = new Date();
@@ -182,7 +202,9 @@ export const applyLessonReward = (pet) => {
   // Тратим энергию
   updated.energy = clampStat('energy', updated.energy - PET_BALANCE.ENERGY.PER_LESSON);
   // Добавляем опыт
-  updated.xp = (updated.xp || 0) + PET_BALANCE.XP.LESSON;
+  updated.xp = clampStat("xp", (updated.xp || 0) + PET_BALANCE.XP.LESSON
+  );
+  updated.level = calculateLevel(updated.xp);
   
   // Сытость всегда увеличивается за урок
   updated.fullness = clampStat('fullness', updated.fullness + PET_BALANCE.FULLNESS.PER_LESSON);

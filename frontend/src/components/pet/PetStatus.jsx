@@ -1,6 +1,6 @@
 import { usePet } from "../../context/PetSocketContext";
 import StatBar from "./bar/StatBar";
-import './Pet.css'
+import './Pet.css';
 
 export default function PetStatus() {
   const { pet } = usePet();
@@ -22,62 +22,53 @@ export default function PetStatus() {
 
   return (
     <div className="pet-status">
+      <h3 className="title">Состояние</h3>
 
-      <h3 className='title'>Состояние</h3>       
-
-      <div className='stat coin'>
-        <img src="/assets/coin-icon.png" />
-
-        <span className='coin-text'>
-          Монеты {pet.coins ?? 0}
-        </span>
+      {/* Горизонтальная панель с монетами, опытом и уровнем */}
+      <div className="top-stats">
+        <div className="top-stat">
+          <img src="/assets/level-icon.png" alt="Уровень" />
+          <span>Уровень {pet.level ?? 1}</span>
+        </div>
+        <div className="top-stat">
+          <img src="/assets/xp-icon.png" alt="Опыт" />
+          <span>Опыт {pet.xp ?? 0}</span>
+        </div>
+        <div className="top-stat">
+          <img src="/assets/coin-icon.png" alt="Монеты" />
+          <span>Монеты {pet.coins ?? 0}</span>
+        </div>
       </div>
-
-      <div className='stat xp'>
-        <img src="/assets/xp-icon.png" />
-
-        <span className='xp-text'>
-          Опыт {pet.xp ?? 0}
-        </span>
-      </div>
-
-      <div className='stat'>
-        <img src="/assets/bar/food-icon.png" />
-
+      {/* Характеристики с полосками (вертикально) */}
+      <div className="stat">
+        <img src="/assets/bar/food-icon.png" alt="Еда" />
         <StatBar
           value={normalize(pet.fullness ?? 0, MAX.fullness)}
           type="food-bar"
         />
-
-        <span className='stat-text'>
+        <span className="stat-text">
           Еда {format(pet.fullness ?? 0)}/{MAX.fullness}
         </span>
-
       </div>
 
-      <div className='stat'>
-        <img src="/assets/bar/energy-icon.png" />
-
+      <div className="stat">
+        <img src="/assets/bar/energy-icon.png" alt="Энергия" />
         <StatBar
           value={normalize(pet.energy ?? 0, MAX.energy)}
           type="energy-bar"
         />
-
-        <span className='stat-text'>
+        <span className="stat-text">
           Энергия {format(pet.energy ?? 0)}/{MAX.energy}
         </span>
-
       </div>
 
-      <div className='stat'>
-        <img src="/assets/bar/happiness-icon.png" />
-
+      <div className="stat">
+        <img src="/assets/bar/happiness-icon.png" alt="Счастье" />
         <StatBar
           value={normalize(pet.happiness ?? 0, MAX.happiness)}
           type="happiness-bar"
         />
-
-        <span className='stat-text'>
+        <span className="stat-text">
           Счастье {format(pet.happiness ?? 0)}/{MAX.happiness}
         </span>
       </div>
