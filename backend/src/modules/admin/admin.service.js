@@ -124,11 +124,6 @@ async function createTestUsers(count = 20) {
                 randomXp
             );
 
-            await adminRepository.setPetLevel(
-                user.id,
-                randomLevel
-            );
-
             users.push(user);
 
         } catch (err) {

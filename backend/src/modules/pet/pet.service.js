@@ -45,7 +45,7 @@ const calculateEnergyRecovery = (lastDate, nowDate) => {
   return total;
 };
 
-const calculateLevel = (xp) => {
+export const calculateLevel = (xp) => {
   let level = 1;
   let totalXp = 0;
 
@@ -167,7 +167,10 @@ const applyActionLogic = (pet, action) => {
     coinsDelta = -cost;
   }
 
-  if (energyDelta < 0 && base.energy + energyDelta < 0) throw new Error("Недостаточно энергии!");
+  if (action === "PLAY") {
+    if (base.fullness == 0) throw new Error("Питомец слишком голоден для игр!");
+    if (energyDelta < 0 && base.energy + energyDelta < 0) throw new Error("Недостаточно энергии!");
+  }
 
   const result = { ...base };
   result.fullness = clampStat("fullness", base.fullness + fullnessDelta);

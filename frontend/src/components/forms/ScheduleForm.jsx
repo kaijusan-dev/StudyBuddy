@@ -21,9 +21,6 @@ export default function ScheduleForm({state, setState, handleSubmit, handleClose
                     <Input name = 'calendar_url' label= 'Ссылка на расписание ЕТИС' type='text' state={state} setState={setState}/>
                     {errors.calendar_url && <Error message={errors.calendar_url} />}
 
-                    <Input name = 'tg_id' label= 'Ваш Telegram ID' type='text' state={state} setState={setState}/>
-                    {errors.tg_id && <Error message={errors.tg_id} />}
-
                     <Button type="submit" variant='base'>Отправить</Button>
                 </form> 
             </div>

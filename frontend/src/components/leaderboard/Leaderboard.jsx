@@ -13,7 +13,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     loadLeaderboard();
-  }, []);
+  }, [user?.id]);
 
   async function loadLeaderboard() {
     try {
@@ -27,7 +27,15 @@ export default function Leaderboard() {
     }
   }
 
+  function getEffectiveRank() {
+    if (userRank !== null && userRank !== undefined) return userRank;
+    if (!players.length || !user) return null;
+    const idx = players.findIndex(p => p.id === user.id);
+    return idx !== -1 ? idx + 1 : null;
+  }
+
   function getRank(rank) {
+    if (rank === null || rank === undefined) return '#';
     if (rank === 1) return <span className={styles.gold}>{rank}</span>;
     if (rank === 2) return <span className={styles.silver}>{rank}</span>;
     if (rank === 3) return <span className={styles.bronze}>{rank}</span>;
@@ -95,7 +103,7 @@ export default function Leaderboard() {
 
           <div className={styles.currentContent}>
             <div className={styles.currentRank}>
-               {getRank(userRank)}
+               {getRank(getEffectiveRank())}  
             </div>
 
             <div className={styles.currentName}>

@@ -19,7 +19,7 @@ services:
       - uploads_data:/app/uploads
 
   db:
-    image: postgres:latest
+    image: postgres:16
     container_name: studybuddy_db
     restart: unless-stopped
     env_file:
@@ -30,7 +30,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backup:
-    image: postgres:latest
+    image: postgres:16
     container_name: studybuddy_backup
     restart: unless-stopped
     env_file:
@@ -39,21 +39,15 @@ services:
       - db
     volumes:
       - ./backups:/backups
-    command: >
+    command: |
       sh -c "
-        until pg_isready -h db -U $$POSTGRES_USER; do
+        export PGPASSWORD=\"\$${POSTGRES_PASSWORD}\";
+        until pg_isready -h db -U \"\$${POSTGRES_USER}\"; do
           sleep 2;
         done;
-
         while true; do
-          pg_dump \
-            -h db \
-            -U $$POSTGRES_USER \
-            $$POSTGRES_DB \
-            > /backups/studybuddy-$$(date +%Y-%m-%d_%H-%M-%S).sql;
-
+          pg_dump -h db -U \"\$${POSTGRES_USER}\" \"\$${POSTGRES_DB}\" > /backups/studybuddy-\$(date +%Y-%m-%d_%H-%M-%S).sql;
           find /backups -name '*.sql' -mtime +7 -delete;
-
           sleep 86400;
         done
       "

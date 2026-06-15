@@ -57,8 +57,6 @@ import "../components/pet/Pet.css";
         
         await api.post('/schedule/update', {calendar_url});
 
-        await api.post('/profile/telegram', {tg_id});
-
         await fetchSchedule();
 
         handleCloseModal();
@@ -119,7 +117,7 @@ import "../components/pet/Pet.css";
             {/* Обычные модалки */}
             {openModal && (
               <Modal onClose={handleCloseModal}>
-                {openModal === "profile" && <Profile />}
+                {/* {openModal === "profile" && <Profile />} */}
                 {openModal === "achievements" && <Achievements />}
                 {openModal === "leaderboard" && <Leaderboard />}
               </Modal>

@@ -1,4 +1,5 @@
 import {pool} from "../../infrastructure/db.js";
+import {calculateLevel} from "#pet";
 
 export async function getTopPlayers() {
 
@@ -22,18 +23,21 @@ export async function getTopPlayers() {
     `;
 
     const result = await pool.query(query);
-
-    return result.rows;
+    const players = result.rows.map(player => ({
+        ...player,
+        level: calculateLevel(player.xp || 0)
+    }));
+    return players;
 }
 
 export async function getUserRank(userId) {
 
     const query = `
-        SELECT COUNT(*) + 1 AS rank
-        FROM pets
-        WHERE xp > (
-            SELECT xp FROM pets WHERE user_id = $1
-        )
+        SELECT CASE
+            WHEN EXISTS (SELECT 1 FROM pets WHERE user_id = $1) THEN
+                (SELECT COUNT(*) + 1 FROM pets WHERE xp > (SELECT xp FROM pets WHERE user_id = $1))
+            ELSE NULL
+        END AS rank;
     `;
 
     const result = await pool.query(query, [userId]);

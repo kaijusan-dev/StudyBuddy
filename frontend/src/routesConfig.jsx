@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage.jsx';
 export const routes = [
   { path: '/', element: <WelcomePage />, protected: false },
   { path: '/schedule', element: <PetPage />, protected: true },
+  // { path: '/play', element: <PlayPage />, protected: true },
   { path: '/pet', element: <PetPage />, protected: true },
   { path: '/profile', element: <Profile />, protected: true },
   { path: '/auth/login', element: <AuthPage type="login" />, protected: false },

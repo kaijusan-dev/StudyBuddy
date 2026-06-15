@@ -55,22 +55,4 @@ const setPetXp = async (userId, xp) => {
     return res.rows[0] || null;
 };
 
-const setPetLevel = async (userId, level) => {
-    const res = await pool.query(
-        `
-        UPDATE pets
-        SET level = $1
-        WHERE user_id = $2
-
-        RETURNING
-            user_id,
-            xp,
-            level
-        `,
-        [level, userId]
-    );
-
-    return res.rows[0] || null;
-};
-
-export {getAllUsers, toggleUserRole, deleteUser, setPetXp, setPetLevel};
+export {getAllUsers, toggleUserRole, deleteUser, setPetXp};
