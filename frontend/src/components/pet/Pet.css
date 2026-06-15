@@ -14,7 +14,7 @@
   left: 50%;
   background: #bcbcfc;
   color: #000000;
-
+  width: max-content;
   padding: 8px 12px;
   border-radius: 8px;
 

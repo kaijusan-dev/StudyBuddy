@@ -172,6 +172,11 @@ const applyActionLogic = (pet, action) => {
     if (energyDelta < 0 && base.energy + energyDelta < 0) throw new Error("Недостаточно энергии!");
   }
 
+  if (action === "CARESS") {
+    if (base.fullness == 0) throw new Error("Питомец слишком голоден!");
+    if (energyDelta < 0 && base.energy + energyDelta < 0) throw new Error("Недостаточно энергии!");
+  }
+
   const result = { ...base };
   result.fullness = clampStat("fullness", base.fullness + fullnessDelta);
   result.happiness = clampStat("happiness", base.happiness + happinessDelta);
