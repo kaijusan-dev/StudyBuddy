@@ -5,12 +5,13 @@ from config import TELEGRAM_TOKEN
 from handlers import (
     start, pet_command, feed_command, petting_command, play_command, daily_command,
     schedule_command, set_calendar_command, add_lesson_command,
-    admin_command, help_command, unknown_command, active_users, top_command
+    admin_command, help_command, unknown_command, top_command, active_users
 )
 from admin import (
     stats, listusers, broadcast, resetpet,
     setxp, setlevel, setstats,
-    setfullness, sethappiness, setenergy
+    setfullness, sethappiness, setenergy,
+    addcoins, setcoins
 )
 from schedule import check_and_send_notifications, send_morning_schedule
 from db import init_db
@@ -28,7 +29,6 @@ async def scheduler(bot):
             await asyncio.sleep(60)
 
 def main():
-    # Инициализация базы данных (создаёт таблицы)
     init_db()
 
     app = Application.builder().token(TELEGRAM_TOKEN).build()
@@ -46,7 +46,6 @@ def main():
     app.add_handler(CommandHandler("admin", admin_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("top", top_command))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown_command))
 
     # Админ-команды
     app.add_handler(CommandHandler("stats", stats))
@@ -59,13 +58,17 @@ def main():
     app.add_handler(CommandHandler("setfullness", setfullness))
     app.add_handler(CommandHandler("sethappiness", sethappiness))
     app.add_handler(CommandHandler("setenergy", setenergy))
+    app.add_handler(CommandHandler("addcoins", addcoins))
+    app.add_handler(CommandHandler("setcoins", setcoins))
+    app.add_handler(MessageHandler(filters.COMMAND, unknown_command))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown_command))
 
     # Запуск планировщика уведомлений
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.create_task(scheduler(app.bot))
 
-    print("✅ Бот запущен. База данных SQLite.")
+    print("✅ Бот запущен. База данных SQLite, полная балансировка по PET_BALANCE.")
     app.run_polling()
 
 if __name__ == "__main__":
